@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity
         toolbar.setTitle("my Title");
         getSupportActionBar().setTitle("Toolbar Title");
         headerName = (TextView) findViewById(R.id.header_name);
-        headerNameUserName = (TextView) findViewById(R.id.header_username);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 

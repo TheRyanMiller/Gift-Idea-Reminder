@@ -5,5 +5,7 @@
     <color name="colorAccent">#FF5722</color>
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#727272</color>
+    <color name="primeGreen">#006600</color>
+    <color name="secondaryGreen">#009933</color>
 
 </resources>
