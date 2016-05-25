@@ -1,4 +1,4 @@
-package com.rtmillerprojects.giftideareminder;
+package com.rtmillerprojects.giftideareminder.UI;
 
 import android.content.Context;
 import android.support.design.widget.NavigationView;
@@ -9,16 +9,21 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.rtmillerprojects.giftideareminder.Fragment1;
+import com.rtmillerprojects.giftideareminder.Fragment2;
+import com.rtmillerprojects.giftideareminder.Fragment3;
+import com.rtmillerprojects.giftideareminder.MainListener;
 import com.rtmillerprojects.giftideareminder.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainListener{
+        implements NavigationView.OnNavigationItemSelectedListener, MainListener {
 
     TabLayout tabLayout;
     ViewPager viewPager;
@@ -42,6 +47,14 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag(MainFragment.class.getName()) == null) {
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, MainFragment.newInstance(), MainFragment.class.getName())
+                    .commit();
+        }
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -61,6 +74,13 @@ public class MainActivity extends AppCompatActivity
         tabLayout.getTabAt(0).setIcon(R.drawable.calendar);
         tabLayout.getTabAt(1).setIcon(R.drawable.contacts80);
         tabLayout.getTabAt(2).setIcon(R.drawable.gift96);
+
+        DrawerLayout drawer = listener.getDrawer();
+        ActionBarDrawerToggle toggle =
+                new ActionBarDrawerToggle(ACA, drawer, toolbar, R.string.navigation_drawer_open,
+                        R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
