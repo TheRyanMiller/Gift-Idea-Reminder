@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Gift Idea Reminder</string>
+    <string name="drawer_open">Gift Idea Reminder</string>
+    <string name="drawer_close">Gift Idea Reminder</string>
 </resources>

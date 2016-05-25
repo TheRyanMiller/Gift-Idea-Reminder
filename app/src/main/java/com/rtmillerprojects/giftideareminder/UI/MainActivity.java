@@ -1,6 +1,8 @@
 package com.rtmillerprojects.giftideareminder.UI;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,8 +14,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.rtmillerprojects.giftideareminder.Fragment1;
@@ -25,12 +29,17 @@ import com.rtmillerprojects.giftideareminder.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, MainListener {
 
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    DrawerLayout drawer;
-    NavigationView navigationView;
-    TextView headerName;
-    TextView headerNameUserName;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private DrawerLayout drawer;
+    private NavigationView navigationView;
+    private TextView headerName;
+    private TextView headerNameUserName;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private CharSequence mTitle;
+    private CharSequence mDrawerTitle;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,20 +49,14 @@ public class MainActivity extends AppCompatActivity
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         viewPager.setAdapter(new CustomAdapter(getSupportFragmentManager(),getApplicationContext()));
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.setupWithViewPager(viewPager);
-
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("my Title");
+        getSupportActionBar().setTitle("Toolbar Title");
         headerName = (TextView) findViewById(R.id.header_name);
         headerNameUserName = (TextView) findViewById(R.id.header_username);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(MainFragment.class.getName()) == null) {
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, MainFragment.newInstance(), MainFragment.class.getName())
-                    .commit();
-        }
 
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
             @Override
@@ -71,21 +74,57 @@ public class MainActivity extends AppCompatActivity
                 viewPager.setCurrentItem(tab.getPosition());
             }
         });
+        tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.calendar);
         tabLayout.getTabAt(1).setIcon(R.drawable.contacts80);
         tabLayout.getTabAt(2).setIcon(R.drawable.gift96);
+        toolbar.setTitle("This is a test");
+        getSupportActionBar().setTitle("Toolbar Title");
+        toolbar.setNavigationIcon(R.drawable.ic_drawer);
 
-        DrawerLayout drawer = listener.getDrawer();
-        ActionBarDrawerToggle toggle =
-                new ActionBarDrawerToggle(ACA, drawer, toolbar, R.string.navigation_drawer_open,
-                        R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mTitle = mDrawerTitle = getTitle();
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                toolbar,
+                R.string.drawer_open,
+                R.string.drawer_close) {
+            //Called when a drawer has settled in a completely closed state.
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                toolbar.setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            // Called when a drawer has settled in a completely open state.
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle("Toolbar Title");
+                toolbar.setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        // Defer code dependent on restoration of previous instance state.
+        // NB: required for the drawer indicator to show up!
+        mDrawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
+
+
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -117,6 +156,12 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onPostCreate(savedInstanceState, persistentState);
+        mDrawerToggle.syncState();
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
@@ -151,4 +196,13 @@ public class MainActivity extends AppCompatActivity
     public DrawerLayout getDrawer() {
         return drawer;
     }
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
+
+    public CharSequence getActionBarTitle() {
+        return getActionBar().getTitle();
+    }
 }
+
