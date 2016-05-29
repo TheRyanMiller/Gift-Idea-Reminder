@@ -1,4 +1,4 @@
-package com.rtmillerprojects.giftideareminder;
+package com.rtmillerprojects.giftideareminder.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.rtmillerprojects.giftideareminder.R;
 
 /**
  * Created by Ryan on 5/21/2016.

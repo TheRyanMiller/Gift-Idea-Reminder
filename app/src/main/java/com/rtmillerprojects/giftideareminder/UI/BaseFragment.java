@@ -1,11 +1,11 @@
-package com.rtmillerprojects.giftideareminder.UI;
+package com.rtmillerprojects.giftideareminder.ui;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by Ryan on 5/24/2016.
+ * Created by Ryan on 5/28/2016.
  */
 public class BaseFragment extends Fragment {
     protected AppCompatActivity ACA;
