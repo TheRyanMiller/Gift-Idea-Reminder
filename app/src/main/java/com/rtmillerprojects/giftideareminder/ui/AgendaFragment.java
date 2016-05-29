@@ -12,14 +12,19 @@ import com.rtmillerprojects.giftideareminder.R;
 /**
  * Created by Ryan on 5/21/2016.
  */
-public class Fragment3 extends Fragment {
-    @Nullable
+public class AgendaFragment extends BaseFragment {
+
+    public static ContactsFragment newInstance() {
+        ContactsFragment fragment = new ContactsFragment();
+        return fragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
         if(container==null) {
             return null;
         }
-        return inflater.inflate(R.layout.fragment3_layout, container, false);
+        return inflater.inflate(R.layout.fragment2_layout, container, false);
     }
 
 }

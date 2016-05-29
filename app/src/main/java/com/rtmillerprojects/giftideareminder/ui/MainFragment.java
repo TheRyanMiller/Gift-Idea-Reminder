@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
+import com.rtmillerprojects.giftideareminder.adapter.ContactsAdapter;
+import com.rtmillerprojects.giftideareminder.adapter.MainTabsAdapter;
 import com.rtmillerprojects.giftideareminder.listener.MainListener;
 
 /**
@@ -27,6 +29,7 @@ public class MainFragment extends BaseFragment {
     private ViewPager viewPager;
     private Toolbar toolbar;
     private MainListener listener;
+    private MainTabsAdapter mainTabsAdapter;
 
 
     public MainFragment() {
@@ -59,6 +62,27 @@ public class MainFragment extends BaseFragment {
         //Set toolbar as default action bar
         ACA.setSupportActionBar(toolbar);
         ACA.getSupportActionBar().setTitle("WASSUP");
+
+        mainTabsAdapter = new MainTabsAdapter(getChildFragmentManager());
+        viewPager.setAdapter(mainTabsAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override public void onPageSelected(int position) {
+                if (position == 1) {
+                    fab.hide();
+                } else {
+                    fab.show();
+                }
+            }
+
+            @Override public void onPageScrollStateChanged(int state) {
+            }
+        });
+        tabLayout.setupWithViewPager(viewPager);
 
         DrawerLayout drawer = listener.getDrawer();
         ActionBarDrawerToggle toggle =
