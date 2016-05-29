@@ -1,8 +1,6 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +12,8 @@ import com.rtmillerprojects.giftideareminder.R;
  */
 public class AgendaFragment extends BaseFragment {
 
-    public static ContactsFragment newInstance() {
-        ContactsFragment fragment = new ContactsFragment();
+    public static AgendaFragment newInstance() {
+        AgendaFragment fragment = new AgendaFragment();
         return fragment;
     }
 
@@ -24,7 +22,7 @@ public class AgendaFragment extends BaseFragment {
         if(container==null) {
             return null;
         }
-        return inflater.inflate(R.layout.fragment2_layout, container, false);
+        return inflater.inflate(R.layout.agenda_fragment, container, false);
     }
 
 }

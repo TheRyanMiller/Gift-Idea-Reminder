@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.rtmillerprojects.giftideareminder.ui.ContactsFragment;
 import com.rtmillerprojects.giftideareminder.ui.AgendaFragment;
+import com.rtmillerprojects.giftideareminder.ui.GiftsFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -21,6 +22,7 @@ public class MainTabsAdapter extends FragmentPagerAdapter {
     public final int CONTACTS_FRAGMENT = 1;
     public final int GIFTS_FRAGMENT = 2;
 
+
     public MainTabsAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -31,15 +33,15 @@ public class MainTabsAdapter extends FragmentPagerAdapter {
         Fragment pagerFragment = null;
         switch (position) {
             case AGENDA_FRAGMENT:
-                pagerFragment = ContactsFragment.newInstance();
+                pagerFragment = AgendaFragment.newInstance();
                 break;
 
             case CONTACTS_FRAGMENT:
-                pagerFragment = AgendaFragment.newInstance();
+                pagerFragment = ContactsFragment.newInstance();
                 break;
 
             case GIFTS_FRAGMENT:
-                pagerFragment = AgendaFragment.newInstance();
+                pagerFragment = GiftsFragment.newInstance();
                 break;
         }
         return pagerFragment;
@@ -47,7 +49,7 @@ public class MainTabsAdapter extends FragmentPagerAdapter {
 
     @Override public int getCount() {
         // Show 3 total pages.
-        return 2;
+        return 3;
     }
 
     @Override public CharSequence getPageTitle(int position) {
