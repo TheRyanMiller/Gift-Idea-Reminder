@@ -39,7 +39,6 @@ import butterknife.ButterKnife;
  */
 public class ContactsFragment extends BaseFragment{
 
-    private ContactsAdapter contactsAdapter;
     private LinearLayoutManager layoutManager;
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
     private ArrayList<Contact> contacts;
@@ -51,14 +50,19 @@ public class ContactsFragment extends BaseFragment{
     private static final int RESULT_PICK_CONTACT = 100; // For the Intent selection
     private static final int REQUEST_CODE_PICK_CONTACTS = 5;
     private static final String TAG = "ContactsFragment";
+    private String contactName;
+    private Bitmap contactPhoto;
+    private String contactNumber;
+    private ContactsAdapter contactsAdapter;
+
 
     public ContactsFragment() {
         // Required empty public constructor
     }
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(contacts == null){contacts = new ArrayList<>();}
 
-        contacts = new ArrayList<>();
         /*
         contacts.add(new Contact("Tyler Roach", "@tylerjroach", "https://avatars3.githubusercontent.com/u/634763?v=3&s=460"));
         contacts.add(new Contact("Jeremy Martin", "@jmar777", "https://avatars2.githubusercontent.com/u/183199?v=3&s=400"));
@@ -81,19 +85,14 @@ public class ContactsFragment extends BaseFragment{
         View rootView = inflater.inflate(R.layout.contacts_fragment, container, false);
         ButterKnife.bind(this, rootView);
 
-        contactsAdapter = new ContactsAdapter(contacts, ACA);
-
         layoutManager = new LinearLayoutManager(ACA);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
+        ContactsAdapter contactsAdapter = new ContactsAdapter(contacts, ACA);
         recyclerView.setAdapter(contactsAdapter);
         recyclerView.setLayoutManager(layoutManager);
 
         noContactsText = (TextView) rootView.findViewById(R.id.noContactsText);
-        int numContacts = contactsAdapter.getItemCount();
-        noContactsText.setText(""+numContacts);
-        if(numContacts>0){noContactsText.setVisibility(View.GONE);}
-        else{recyclerView.setVisibility(View.GONE);}
+        adjustContactVisibility(contactsAdapter);
 
         Button addContact = (Button) rootView.findViewById(R.id.btn_addContact);
         addContact.setOnClickListener(new View.OnClickListener(){
@@ -104,6 +103,7 @@ public class ContactsFragment extends BaseFragment{
             }
 
         });
+        //addContact.setText(contactName);
         return rootView;
     }
     @Override
@@ -127,16 +127,26 @@ public class ContactsFragment extends BaseFragment{
             Log.d(TAG, "Response: " + data.toString());
             uriContact = data.getData();
 
-            retrieveContactName();
-            retrieveContactNumber();
-            retrieveContactPhoto();
+            contactName = retrieveContactName();
+            contactNumber = retrieveContactNumber();
+            contactPhoto = retrieveContactPhoto();
+            Log.d(TAG, "SRSLY CONTACT NAME IS: " + contactName);
+            Log.d(TAG, "SRSLY CONTACT NUMBER IS: " + contactNumber);
+            Contact newContact = new Contact(contactName,contactNumber,"abc");
 
+            contacts.add(newContact);
+            if (contactsAdapter == null) {
+                contactsAdapter = new ContactsAdapter(contacts, ACA);
+                recyclerView.setAdapter(contactsAdapter);
+            }
+            adjustContactVisibility(contactsAdapter);
+            contactsAdapter.notifyDataSetChanged();
         }
     }
-    private void retrieveContactPhoto() {
-        /*
-        Bitmap photo = null;
+    private Bitmap retrieveContactPhoto() {
 
+        Bitmap photo = null;
+        /*
         try {
             InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ACA.getContentResolver(),
                     ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(contactID)));
@@ -151,25 +161,20 @@ public class ContactsFragment extends BaseFragment{
             e.printStackTrace();
         }
         */
-
+        return photo;
     }
 
-    private void retrieveContactNumber() {
-
+    private String retrieveContactNumber() {
         String contactNumber = null;
-
         // getting contacts ID
         Cursor cursorID = ACA.getContentResolver().query(uriContact,
                 new String[]{ContactsContract.Contacts._ID},
                 null, null, null);
 
         if (cursorID.moveToFirst()) {
-
             contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
         }
-
         cursorID.close();
-
         Log.d(TAG, "Contact ID: " + contactID);
         // Using the contact ID now we will get contact phone number
         Cursor cursorPhone = ACA.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -183,13 +188,12 @@ public class ContactsFragment extends BaseFragment{
         if (cursorPhone.moveToFirst()) {
             contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
         }
-
         cursorPhone.close();
-
         Log.d(TAG, "Contact Phone Number: " + contactNumber);
+        return contactNumber;
     }
 
-    private void retrieveContactName() {
+    private String retrieveContactName() {
 
         String contactName = null;
 
@@ -205,7 +209,20 @@ public class ContactsFragment extends BaseFragment{
         }
         cursor.close();
         Log.d(TAG, "Contact Name: " + contactName);
+        return contactName;
 
+    }
+    private void adjustContactVisibility(ContactsAdapter contactsAdapter){
+        int numContacts = contactsAdapter.getItemCount();
+        noContactsText.setText(""+numContacts);
+        if(numContacts>0){
+            noContactsText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+        else{
+            recyclerView.setVisibility(View.VISIBLE);
+            noContactsText.setVisibility(View.VISIBLE);
+        }
     }
 
 }
