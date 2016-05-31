@@ -126,13 +126,19 @@ public class ContactsFragment extends BaseFragment{
         if (requestCode == RESULT_PICK_CONTACT && resultCode == ACA.RESULT_OK) {
             Log.d(TAG, "Response: " + data.toString());
             uriContact = data.getData();
-
-            contactName = retrieveContactName();
-            contactNumber = retrieveContactNumber();
-            contactPhoto = retrieveContactPhoto();
+            Cursor cursorID = ACA.getContentResolver().query(uriContact,
+                    new String[]{ContactsContract.Contacts._ID},
+                    null, null, null);
+            if (cursorID.moveToFirst()) {
+                contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
+            }
+            contactName = retrieveContactName(contactID);
+            contactNumber = retrieveContactNumber(contactID);
+            contactPhoto = retrieveContactPhoto(contactID);
+            Log.d(TAG, "Contact ID: " + contactID);
             Log.d(TAG, "SRSLY CONTACT NAME IS: " + contactName);
             Log.d(TAG, "SRSLY CONTACT NUMBER IS: " + contactNumber);
-            Contact newContact = new Contact(contactName,contactNumber,"abc");
+            Contact newContact = new Contact(contactName,contactNumber, contactPhoto);
 
             contacts.add(newContact);
             if (contactsAdapter == null) {
@@ -143,47 +149,39 @@ public class ContactsFragment extends BaseFragment{
             contactsAdapter.notifyDataSetChanged();
         }
     }
-    private Bitmap retrieveContactPhoto() {
+    private Bitmap retrieveContactPhoto(String theContactId) {
 
         Bitmap photo = null;
-        /*
         try {
             InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ACA.getContentResolver(),
                     ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(contactID)));
             if (inputStream != null) {
                 photo = BitmapFactory.decodeStream(inputStream);
-                //ImageView imageView = (ImageView) rootView.findViewById(R.id.img_contact);
-                //imageView.setImageBitmap(photo);
             }
             assert inputStream != null;
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
         return photo;
     }
 
-    private String retrieveContactNumber() {
+    private String retrieveContactNumber(String theContactId) {
         String contactNumber = null;
         // getting contacts ID
-        Cursor cursorID = ACA.getContentResolver().query(uriContact,
-                new String[]{ContactsContract.Contacts._ID},
-                null, null, null);
-
-        if (cursorID.moveToFirst()) {
-            contactID = cursorID.getString(cursorID.getColumnIndex(ContactsContract.Contacts._ID));
-        }
-        cursorID.close();
-        Log.d(TAG, "Contact ID: " + contactID);
         // Using the contact ID now we will get contact phone number
-        Cursor cursorPhone = ACA.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        Cursor cursorPhone = ACA.getContentResolver().query(
+                //// The content URI of the words table
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                // The columns to return for each row
                 new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
-
+                // Selection criteria
                 ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? AND " +
                         ContactsContract.CommonDataKinds.Phone.TYPE + " = " +
                         ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
-                new String[]{contactID},
+                // Selection criteria
+                new String[]{theContactId},
+                //Sort Order
                 null);
         if (cursorPhone.moveToFirst()) {
             contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
@@ -193,24 +191,18 @@ public class ContactsFragment extends BaseFragment{
         return contactNumber;
     }
 
-    private String retrieveContactName() {
-
+    private String retrieveContactName(String theContactId) {
         String contactName = null;
-
         // querying contact data store
         Cursor cursor = ACA.getContentResolver().query(uriContact, null, null, null, null);
         if (cursor.moveToFirst()) {
-
             // DISPLAY_NAME = The display name for the contact.
             // HAS_PHONE_NUMBER =   An indicator of whether this contact has at least one phone number.
-
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
         }
         cursor.close();
-        Log.d(TAG, "Contact Name: " + contactName);
+        Log.d(TAG, "CONTACT SOURCE_ID: " + theContactId);
         return contactName;
-
     }
     private void adjustContactVisibility(ContactsAdapter contactsAdapter){
         int numContacts = contactsAdapter.getItemCount();

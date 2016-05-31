@@ -62,7 +62,7 @@ public class MainFragment extends BaseFragment {
         viewPager = (ViewPager) rootView.findViewById(R.id.view_pager);
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         ACA.setSupportActionBar(toolbar);
-        ACA.getSupportActionBar().setTitle("Capture Yo Gifts!");
+        ACA.getSupportActionBar().setTitle("Programmatic title");
 
         //View Pager stuff
         mainTabsAdapter = new MainTabsAdapter(getChildFragmentManager());

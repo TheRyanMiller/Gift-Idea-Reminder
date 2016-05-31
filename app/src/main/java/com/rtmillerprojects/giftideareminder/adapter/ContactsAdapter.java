@@ -22,16 +22,17 @@ import butterknife.ButterKnife;
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder> {
     private ArrayList<Contact> contacts;
     private Context context;
+    ImageView profilePhoto;
 
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.name) TextView name;
         @Bind(R.id.username) TextView username;
-        @Bind(R.id.profile_photo)
-        ImageView profilePhoto;
+        @Bind(R.id.profile_photo) ImageView profilePhoto;
 
         public ContactViewHolder(View v) {
             super(v);
+            profilePhoto = (ImageView) v.findViewById(R.id.profile_photo);
             ButterKnife.bind(this, v);
         }
     }
@@ -50,15 +51,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override public void onBindViewHolder(ContactViewHolder holder, int position) {
 
+
         Contact contact = contacts.get(position);
 
         holder.name.setText(contact.getName());
         holder.username.setText(contact.getUsername());
 
-        Picasso.with(context).load(contact.getProfilePhotoUrl())
+        /*
+        Picasso.with(context).load(contact.getProfilePhoto())
                 .placeholder(R.drawable.ic_person_grey600_24dp)
                 .into(holder.profilePhoto);
-
+        */
+        //profilePhoto.setImageBitmap(contact.getProfilePhoto());
+        holder.profilePhoto.setImageBitmap(contact.getProfilePhoto());
     }
 
     @Override public int getItemCount() {
