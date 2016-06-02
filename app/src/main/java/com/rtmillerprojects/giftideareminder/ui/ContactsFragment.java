@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.rtmillerprojects.giftideareminder.R;
 import com.rtmillerprojects.giftideareminder.adapter.ContactsAdapter;
 import com.rtmillerprojects.giftideareminder.model.Contact;
+import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -215,6 +216,10 @@ public class ContactsFragment extends BaseFragment{
             recyclerView.setVisibility(View.VISIBLE);
             noContactsText.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void doStuff(){
+        DatabaseHelper db = new DatabaseHelper(ACA);
     }
 
 }
