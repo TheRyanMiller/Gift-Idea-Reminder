@@ -13,6 +13,9 @@ import java.util.Date;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    private static DatabaseHelper sInstance;
+
+    private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "giftymcgiftface.db";
     public static final String TABLE_AGENDA_ITEMS = "agenda_items";
     public static final String TABLE_CONTACTS = "contacts";
@@ -49,42 +52,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " DATETIME" + ")";
 
 
-    public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+    public static synchronized DatabaseHelper getInstance(Context context){
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return sInstance;
+    }
+
+    private DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
         SQLiteDatabase db = this.getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "+TABLE_NAME+" ("+COL_1+" INTEGER PRIMARY KEY AUTOINCREMENT,"+COL_2+" TEXT)");
+        // creating required tables
+        db.execSQL(CREATE_TABLE_AGENDA_ITEMS);
+        db.execSQL(CREATE_TABLE_CONTACTS);
+        db.execSQL(CREATE_TABLE_GIFTS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE  IF EXISTS "+TABLE_NAME);
-    }
-
-    public boolean insertData(String message){
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_2,message);
-        long result = db.insert(TABLE_NAME,null,contentValues);
-        if(result == -1){
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
-
-    public Cursor getData(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor result = db.rawQuery("SELECT * FROM "+TABLE_NAME,null);
-        return result;
-    }
-    public boolean deleteData(String message){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME,"message=?",new String[] {message});
-        return true;
+        // on upgrade drop older tables
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AGENDA_ITEMS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_GIFTS);
+        // create new tables
+        onCreate(db);
     }
 }
