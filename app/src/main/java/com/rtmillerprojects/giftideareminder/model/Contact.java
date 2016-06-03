@@ -16,6 +16,7 @@ public class Contact {
     private String name;
     private String username;
     private Bitmap profilePhoto;
+    private String relationship;
 
     public Contact(String name, String username, Bitmap profilePhoto) {
         this.name = name;
@@ -45,5 +46,13 @@ public class Contact {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(String name) {
+        this.relationship = name;
     }
 }

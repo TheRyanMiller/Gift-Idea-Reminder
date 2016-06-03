@@ -6,7 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.rtmillerprojects.giftideareminder.model.AgendaItem;
+import com.rtmillerprojects.giftideareminder.model.Contact;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Ryan on 5/31/2016.
@@ -29,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String EVENT_DATE = "date";
     // Contacts columns
     private static final String CONTACT_NAME = "name";
-    private static final String RELATIONSHIP = "relationship";
+    private static final String CONTACT_RELATIONSHIP = "relationship";
     // Gifts columns
     private static final String GIFT_NAME = "name";
     private static final String URL = "url";
@@ -43,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE "
             + TABLE_CONTACTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME
-            + " TEXT," + RELATIONSHIP + " TEXT," + KEY_CREATED_AT
+            + " TEXT," + CONTACT_RELATIONSHIP + " TEXT," + KEY_CREATED_AT
             + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_GIFTS = "CREATE TABLE "
@@ -83,5 +88,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GIFTS);
         // create new tables
         onCreate(db);
+    }
+
+    /*
+     * Creating a todo
+     */
+    public long insertContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACT_NAME, contact.getName());
+        values.put(CONTACT_RELATIONSHIP, contact.getRelationship());
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long contactId = db.insert(TABLE_CONTACTS, null, values);
+
+        return contactId;
+    }
+    public long insertAgendaItem(AgendaItem agendaItem){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        long agendaItemId = db.insert(TABLE_AGENDA_ITEMS, null, values);
+        return agendaItemId;
+    }
+
+
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
     }
 }
