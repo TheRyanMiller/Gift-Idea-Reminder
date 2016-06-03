@@ -25,13 +25,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_AGENDA_ITEMS = "agenda_items";
     public static final String TABLE_CONTACTS = "contacts";
     public static final String TABLE_GIFTS = "gifts";
-    public static final String COL_1 = "ID";
-    public static final String COL_2 = "MESSAGE";
     // Common column names
     private static final String KEY_ID = "id";
     private static final String KEY_CREATED_AT = "created_at";
     // Agenda items columns
     private static final String EVENT_DATE = "date";
+    private static final String EVENT_TITLE = "title";
+    private static final String EVENT_RECURRING = "recurring";
+    private static final String EVENT_RECURRATE = "recurrate";
     // Contacts columns
     private static final String CONTACT_NAME = "name";
     private static final String CONTACT_RELATIONSHIP = "relationship";
@@ -108,7 +109,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public long insertAgendaItem(AgendaItem agendaItem){
         SQLiteDatabase db = this.getWritableDatabase();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
         ContentValues values = new ContentValues();
+        values.put(EVENT_DATE, dateFormat.format(agendaItem.getDate()));
+        values.put(EVENT_TITLE, agendaItem.getTitle());
+        values.put(KEY_CREATED_AT, getDateTime());
         long agendaItemId = db.insert(TABLE_AGENDA_ITEMS, null, values);
         return agendaItemId;
     }
