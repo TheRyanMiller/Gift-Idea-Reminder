@@ -8,4 +8,9 @@
     <color name="primeGreen">#006600</color>
     <color name="secondaryGreen">#009933</color>
 
+    <color name="fabagenda">#7B1FA2</color>
+    <color name="fabcontact">#FF3D00</color>
+    <color name="fabgift">#303F9F</color>
+
+
 </resources>

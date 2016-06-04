@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="62dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
     android:clickable="true"
     android:background="?attr/selectableItemBackground">
 
@@ -20,26 +20,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/profile_photo"
-        android:orientation="vertical"
-        android:layout_centerVertical="true">
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:weightSum="6"
+        android:id="@+id/fullcontactrow">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/name"
-            android:text="Full Name"
-            android:textSize="16sp"
-            android:singleLine="true"/>
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/relationship"
-            android:text=""
-            android:textSize="12sp"
-            android:singleLine="true"
-            android:textColor="@color/secondaryText"/>
+            android:layout_toRightOf="@id/profile_photo"
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="75dp"
+            android:layout_weight="5"
+            android:id="@+id/linearLayout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/name"
+                android:text="Full Name"
+                android:textSize="16sp"
+                android:singleLine="true"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/relationship"
+                android:text=""
+                android:textSize="12sp"
+                android:singleLine="true"
+                android:textColor="@color/secondaryText"/>
+
+        </LinearLayout>
+
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:gravity="center"
+                android:shadowColor="@android:color/white"
+                android:shadowRadius="10.0"
+                android:text="4"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+        </FrameLayout>
 
     </LinearLayout>
+
+
 
 </RelativeLayout>

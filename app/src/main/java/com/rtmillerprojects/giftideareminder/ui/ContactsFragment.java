@@ -2,6 +2,7 @@ package com.rtmillerprojects.giftideareminder.ui;
 
 import android.Manifest;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
 import com.rtmillerprojects.giftideareminder.adapter.ContactsAdapter;
+import com.rtmillerprojects.giftideareminder.listener.FabClickListener;
 import com.rtmillerprojects.giftideareminder.model.Contact;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
@@ -40,7 +43,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Ryan on 5/29/2016.
  */
-public class ContactsFragment extends BaseFragment{
+public class ContactsFragment extends BaseFragment implements FabClickListener{
 
     private LinearLayoutManager layoutManager;
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
@@ -72,6 +75,11 @@ public class ContactsFragment extends BaseFragment{
         return fragment;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance){
         //inflate the contacts layout
         View rootView = inflater.inflate(R.layout.contacts_fragment, container, false);
@@ -88,15 +96,6 @@ public class ContactsFragment extends BaseFragment{
         noContactsText = (TextView) rootView.findViewById(R.id.noContactsText);
         adjustContactVisibility(contactsAdapter);
 
-        Button addContact = (Button) rootView.findViewById(R.id.btn_addContact);
-        addContact.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view) {
-                //new Intent(Intent.ACTION_PICK, );
-                //Intent in =
-                startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
-            }
-
-        });
         //addContact.setText(contactName);
         return rootView;
     }
@@ -221,4 +220,10 @@ public class ContactsFragment extends BaseFragment{
         db = DatabaseHelper.getInstance(ACA);
     }
 
+    @Override
+    public void fabClickListener() {
+        //startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
+        //FloatingActionButton fab = (FloatingActionButton) ACA.findViewById(R.id.fab);
+        Toast.makeText(ACA,"WE ARE IN CONTACTS",Toast.LENGTH_SHORT).show();
+    }
 }
