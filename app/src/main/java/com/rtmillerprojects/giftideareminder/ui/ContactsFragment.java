@@ -46,6 +46,7 @@ public class ContactsFragment extends BaseFragment{
     private TextView noContactsText;
     private Uri uriContact;
     private String contactID;
+    DatabaseHelper db;
 
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     private static final int RESULT_PICK_CONTACT = 100; // For the Intent selection
@@ -63,18 +64,6 @@ public class ContactsFragment extends BaseFragment{
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(contacts == null){contacts = new ArrayList<>();}
-
-        /*
-        contacts.add(new Contact("Tyler Roach", "@tylerjroach", "https://avatars3.githubusercontent.com/u/634763?v=3&s=460"));
-        contacts.add(new Contact("Jeremy Martin", "@jmar777", "https://avatars2.githubusercontent.com/u/183199?v=3&s=400"));
-        contacts.add(new Contact("Josh Skidmore", "@joshskidmore", "https://avatars1.githubusercontent.com/u/255734?v=3&s=400"));
-        contacts.add(new Contact("Bryan Gilbert", "@gilbertw1", "https://avatars0.githubusercontent.com/u/142303?v=3&s=460"));
-        contacts.add(new Contact("Jonathan Spohn", "@spohn", "https://avatars1.githubusercontent.com/u/1420991?v=3&s=460"));
-        contacts.add(new Contact("Bobby Strickland", "@bcstrickland", "https://avatars1.githubusercontent.com/u/1774585?v=3&s=460"));
-        contacts.add(new Contact("Jono Young", "@chsweb", "https://avatars3.githubusercontent.com/u/873222?v=3&s=460"));
-        contacts.add(new Contact("Rohit Krishnan", "@rkrishnan2012", "https://avatars0.githubusercontent.com/u/1313767?v=3&s=460"));
-        contacts.add(new Contact("Dan Smith", "@dansmithsc", "https://avatars3.githubusercontent.com/u/994827?v=3&s=460"));
-        */
     }
     public static ContactsFragment newInstance() {
         ContactsFragment fragment = new ContactsFragment();
@@ -85,9 +74,11 @@ public class ContactsFragment extends BaseFragment{
         //inflate the contacts layout
         View rootView = inflater.inflate(R.layout.contacts_fragment, container, false);
         ButterKnife.bind(this, rootView);
-
+        db = DatabaseHelper.getInstance(ACA);
+        //need to pull in contacts from db
         layoutManager = new LinearLayoutManager(ACA);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        contacts = db.getAllContacts();
         ContactsAdapter contactsAdapter = new ContactsAdapter(contacts, ACA);
         recyclerView.setAdapter(contactsAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -140,14 +131,14 @@ public class ContactsFragment extends BaseFragment{
             Log.d(TAG, "SRSLY CONTACT NAME IS: " + contactName);
             Log.d(TAG, "SRSLY CONTACT NUMBER IS: " + contactNumber);
             Contact newContact = new Contact(contactName,contactNumber, contactPhoto);
-
-            contacts.add(newContact);
+            db.insertContact(newContact);
+            contacts = db.getAllContacts();
             if (contactsAdapter == null) {
                 contactsAdapter = new ContactsAdapter(contacts, ACA);
                 recyclerView.setAdapter(contactsAdapter);
             }
             adjustContactVisibility(contactsAdapter);
-            contactsAdapter.notifyDataSetChanged();
+            recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
     private Bitmap retrieveContactPhoto(String theContactId) {
@@ -219,7 +210,8 @@ public class ContactsFragment extends BaseFragment{
     }
 
     private void doStuff(){
-        DatabaseHelper db = new DatabaseHelper(ACA);
+        DatabaseHelper db;
+        db = DatabaseHelper.getInstance(ACA);
     }
 
 }

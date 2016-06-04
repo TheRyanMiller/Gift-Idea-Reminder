@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
 import com.rtmillerprojects.giftideareminder.listener.MainListener;
+import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
 /**
  * Created by Ryan on 5/28/2016.
@@ -20,11 +21,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_drawer_base);
+
+        db = DatabaseHelper.getInstance(this);
+        //db.onCreate(db);
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentManager.findFragmentByTag(MainFragment.class.getName()) == null) {
 

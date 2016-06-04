@@ -5,12 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.rtmillerprojects.giftideareminder.model.AgendaItem;
 import com.rtmillerprojects.giftideareminder.model.Contact;
+import com.rtmillerprojects.giftideareminder.model.Gift;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -19,7 +23,7 @@ import java.util.Locale;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper sInstance;
-
+    private static final String TAG = "DatabaseHelper";
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "giftymcgiftface.db";
     public static final String TABLE_AGENDA_ITEMS = "agenda_items";
@@ -40,22 +44,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String GIFT_NAME = "name";
     private static final String URL = "url";
     private static final String PHOTO_LOCATION = "photo_location";
+    private static final String GIFT_NOTES = "notes";
 
 
-    private static final String CREATE_TABLE_AGENDA_ITEMS = "CREATE TABLE "
-            + TABLE_AGENDA_ITEMS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + EVENT_DATE
-            + " DATE," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+    private static final String CREATE_TABLE_AGENDA_ITEMS = "CREATE TABLE " +
+            TABLE_AGENDA_ITEMS + "(" + KEY_ID + " INTEGER PRIMARY KEY," +
+            EVENT_DATE + " DATE," +
+            EVENT_RECURRING + " BOOLEAN," +
+            EVENT_RECURRATE + " TEXT," +
+            KEY_CREATED_AT + " DATETIME" + ")";
 
-    private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE "
-            + TABLE_CONTACTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + CONTACT_NAME
-            + " TEXT," + CONTACT_RELATIONSHIP + " TEXT," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+    private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE " + TABLE_CONTACTS + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY," +
+            CONTACT_NAME + " TEXT," +
+            CONTACT_RELATIONSHIP + " TEXT," +
+            KEY_CREATED_AT + " DATETIME" + ")";
 
-    private static final String CREATE_TABLE_GIFTS = "CREATE TABLE "
-            + TABLE_GIFTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + GIFT_NAME
-            + " TEXT," + URL + " TEXT," + PHOTO_LOCATION + " TEXT," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+    private static final String CREATE_TABLE_GIFTS = "CREATE TABLE " + TABLE_GIFTS + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY," +
+            GIFT_NAME + " TEXT," +
+            URL + " TEXT," +
+            PHOTO_LOCATION + " TEXT," +
+            KEY_CREATED_AT + " DATETIME" + ")";
 
 
     public static synchronized DatabaseHelper getInstance(Context context){
@@ -104,7 +114,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // insert row
         long contactId = db.insert(TABLE_CONTACTS, null, values);
-
         return contactId;
     }
     public long insertAgendaItem(AgendaItem agendaItem){
@@ -116,9 +125,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(EVENT_DATE, dateFormat.format(agendaItem.getDate()));
         values.put(EVENT_TITLE, agendaItem.getTitle());
+        values.put(EVENT_RECURRING, agendaItem.getRecurring());
+        values.put(EVENT_RECURRATE, agendaItem.getRecurRate());
         values.put(KEY_CREATED_AT, getDateTime());
+
         long agendaItemId = db.insert(TABLE_AGENDA_ITEMS, null, values);
         return agendaItemId;
+    }
+    public long insertGift(Gift gift) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(GIFT_NAME, gift.getName());
+        values.put(URL, gift.getUrl());
+        values.put(PHOTO_LOCATION, gift.getPhotoLocation());
+        values.put(GIFT_NOTES, gift.getNotes());
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long contactId = db.insert(TABLE_CONTACTS, null, values);
+
+        return contactId;
+    }
+    public ArrayList<Contact> getAllContacts() {
+        ArrayList<Contact> contacts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
+        /* Specified record
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS + " WHERE "
+                + KEY_ID + " = " + todo_id;
+        */
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                Contact dbContact = new Contact();
+                dbContact.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbContact.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
+                dbContact.setRelationship(c.getString(c.getColumnIndex(CONTACT_RELATIONSHIP)));
+                contacts.add(dbContact);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return contacts;
     }
 
 

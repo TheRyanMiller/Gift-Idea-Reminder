@@ -11,7 +11,7 @@ public class AgendaItem {
     private Date date;
     private String title;
     private boolean recurring;
-    private String recurringRate;
+    private String recurrate;
 
     public AgendaItem(Contact contact, String title, String notes, Date date){
         this.date = date;
@@ -28,4 +28,7 @@ public class AgendaItem {
 
     public boolean getRecurring(){ return recurring;}
     public void setRecurring(boolean recurring){this.recurring = recurring;}
+
+    public String getRecurRate(){ return recurrate;}
+    public void setRecurRate(String recurrate){this.recurrate = recurrate;}
 }
