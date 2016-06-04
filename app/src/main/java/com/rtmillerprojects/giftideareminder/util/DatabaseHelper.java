@@ -14,7 +14,6 @@ import com.rtmillerprojects.giftideareminder.model.Gift;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -24,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper sInstance;
     private static final String TAG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "giftymcgiftface.db";
     public static final String TABLE_AGENDA_ITEMS = "agenda_items";
     public static final String TABLE_CONTACTS = "contacts";
@@ -39,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String EVENT_RECURRATE = "recurrate";
     // Contacts columns
     private static final String CONTACT_NAME = "name";
+    private static final String CONTACT_IMAGE = "image";
     private static final String CONTACT_RELATIONSHIP = "relationship";
     // Gifts columns
     private static final String GIFT_NAME = "name";
@@ -58,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_ID + " INTEGER PRIMARY KEY," +
             CONTACT_NAME + " TEXT," +
             CONTACT_RELATIONSHIP + " TEXT," +
+            CONTACT_IMAGE + " BLOB," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_GIFTS = "CREATE TABLE " + TABLE_GIFTS + "(" +
@@ -102,14 +103,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /*
-     * Creating a todo
+     * Creating a contact
      */
     public long insertContact(Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
+        byte[] photoByte;
+        if(contact.getProfilePhoto()==null) {
+            photoByte=null;
+        }
+        else{photoByte = DbBitmapUtility.getBytes(contact.getProfilePhoto());}
 
         ContentValues values = new ContentValues();
         values.put(CONTACT_NAME, contact.getName());
         values.put(CONTACT_RELATIONSHIP, contact.getRelationship());
+        values.put(CONTACT_IMAGE, photoByte);
         values.put(KEY_CREATED_AT, getDateTime());
 
         // insert row
@@ -163,6 +170,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 dbContact.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 dbContact.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
                 dbContact.setRelationship(c.getString(c.getColumnIndex(CONTACT_RELATIONSHIP)));
+                if(c.getBlob(c.getColumnIndex(CONTACT_IMAGE))==null) {}
+                else{
+                    dbContact.setProfilePhoto(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(CONTACT_IMAGE))));
+                }
                 contacts.add(dbContact);
             } while(c.moveToNext());
             c.moveToFirst();

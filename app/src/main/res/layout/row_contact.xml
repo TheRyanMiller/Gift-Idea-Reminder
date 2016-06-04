@@ -34,8 +34,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/username"
-            android:text="\@username"
+            android:id="@+id/relationship"
+            android:text=""
             android:textSize="12sp"
             android:singleLine="true"
             android:textColor="@color/secondaryText"/>

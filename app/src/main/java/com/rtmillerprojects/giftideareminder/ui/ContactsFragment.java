@@ -7,11 +7,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -130,15 +132,18 @@ public class ContactsFragment extends BaseFragment{
             Log.d(TAG, "Contact ID: " + contactID);
             Log.d(TAG, "SRSLY CONTACT NAME IS: " + contactName);
             Log.d(TAG, "SRSLY CONTACT NUMBER IS: " + contactNumber);
-            Contact newContact = new Contact(contactName,contactNumber, contactPhoto);
+            Contact newContact = new Contact(contactName,"Brother", contactPhoto);
             db.insertContact(newContact);
-            contacts = db.getAllContacts();
+            contacts.clear();
+            contacts.addAll(db.getAllContacts());
             if (contactsAdapter == null) {
                 contactsAdapter = new ContactsAdapter(contacts, ACA);
                 recyclerView.setAdapter(contactsAdapter);
             }
-            adjustContactVisibility(contactsAdapter);
             recyclerView.getAdapter().notifyDataSetChanged();
+            contactsAdapter.notifyDataSetChanged();
+            adjustContactVisibility(contactsAdapter);
+
         }
     }
     private Bitmap retrieveContactPhoto(String theContactId) {
@@ -146,14 +151,16 @@ public class ContactsFragment extends BaseFragment{
         Bitmap photo = null;
         try {
             InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(ACA.getContentResolver(),
-                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(contactID)));
-            if (inputStream != null) {
-                photo = BitmapFactory.decodeStream(inputStream);
+                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(theContactId)));
+            if (inputStream == null) {
+                //return BitmapFactory.decodeResource(ACA.getResources(), R.drawable.ic_person_grey600_24dp);
+                return null;
             }
-            assert inputStream != null;
+            photo = BitmapFactory.decodeStream(inputStream);
             inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
         return photo;
     }

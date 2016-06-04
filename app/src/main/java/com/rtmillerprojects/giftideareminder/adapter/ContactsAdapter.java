@@ -1,6 +1,8 @@
 package com.rtmillerprojects.giftideareminder.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +12,6 @@ import android.widget.TextView;
 
 import com.rtmillerprojects.giftideareminder.R;
 import com.rtmillerprojects.giftideareminder.model.Contact;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import butterknife.Bind;
@@ -27,7 +28,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.name) TextView name;
-        @Bind(R.id.username) TextView username;
+        @Bind(R.id.relationship) TextView relationship;
         @Bind(R.id.profile_photo) ImageView profilePhoto;
 
         public ContactViewHolder(View v) {
@@ -51,19 +52,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override public void onBindViewHolder(ContactViewHolder holder, int position) {
 
-
         Contact contact = contacts.get(position);
-
         holder.name.setText(contact.getName());
-        holder.username.setText(contact.getUsername());
-
-        /*
-        Picasso.with(context).load(contact.getProfilePhoto())
+        holder.relationship.setText(contact.getRelationship());
+        /*Picasso.with(context).load(contact.getProfilePhoto())
                 .placeholder(R.drawable.ic_person_grey600_24dp)
-                .into(holder.profilePhoto);
-        */
+                .into(holder.profilePhoto); */
         //profilePhoto.setImageBitmap(contact.getProfilePhoto());
-        holder.profilePhoto.setImageBitmap(contact.getProfilePhoto());
+        if (contact.getProfilePhoto()==null) {
+            Drawable d = ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_person_grey600_24dp, null);
+            holder.profilePhoto.setImageDrawable(d);
+        } else {
+            holder.profilePhoto.setImageBitmap(contact.getProfilePhoto());
+        }
     }
 
     @Override public int getItemCount() {
