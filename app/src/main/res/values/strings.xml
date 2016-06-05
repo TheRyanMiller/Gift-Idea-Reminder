@@ -61,4 +61,11 @@
     <!-- Snackbars -->
     <string name="snackbar_action">Action</string>
 
+    <!-- Spinner options -->
+    <string-array name="recurrence_options">
+        <item>Yearly</item>
+        <item>Monthly</item>
+        <item>Other</item>
+    </string-array>
+
 </resources>

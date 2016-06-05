@@ -7,12 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="80sp"
-        android:text="HELLO"
-        />
 
     <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -34,7 +28,8 @@
         android:background="@color/material_gray_200"
         android:fillViewport="true"
         android:fitsSystemWindows="true"
-        tools:context=".ui.EditEventActivity">
+        tools:context=".ui.EditEventActivity"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
 
@@ -44,13 +39,48 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/view_spacing_small">
 
-            <include layout="@layout/fragment_material_theme_in_xml_buttons_raised"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Name"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Date"/>
+            <EditText
+                android:id="@+id/selectedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Here is the date"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event Name"/>
+            <Switch
+                android:id="@+id/recurring_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recurrence"/>
+            <Spinner
+                android:id="@+id/recurrence_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
 
-            <include layout="@layout/fragment_material_theme_in_xml_switches"/>
-
-            <include layout="@layout/fragment_material_theme_in_xml_spinners"/>
-
-            <include layout="@layout/fragment_material_theme_in_xml_sliders"/>
+            values.put(EVENT_DATE, dateFormat.format(agendaItem.getDate()));
+            values.put(EVENT_TITLE, agendaItem.getTitle());
+            values.put(EVENT_RECURRING, agendaItem.getRecurring());
+            values.put(EVENT_RECURRATE, agendaItem.getRecurRate());
+            values.put(KEY_CREATED_AT, getDateTime());
 
 
             <FrameLayout
