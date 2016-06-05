@@ -84,11 +84,14 @@ public class ContactsFragment extends BaseFragment implements FabClickListener{
         //inflate the contacts layout
         View rootView = inflater.inflate(R.layout.contacts_fragment, container, false);
         ButterKnife.bind(this, rootView);
-        db = DatabaseHelper.getInstance(ACA);
-        //need to pull in contacts from db
+
         layoutManager = new LinearLayoutManager(ACA);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        //need to pull in contacts from db
+        db = DatabaseHelper.getInstance(ACA);
         contacts = db.getAllContacts();
+
         ContactsAdapter contactsAdapter = new ContactsAdapter(contacts, ACA);
         recyclerView.setAdapter(contactsAdapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -96,7 +99,6 @@ public class ContactsFragment extends BaseFragment implements FabClickListener{
         noContactsText = (TextView) rootView.findViewById(R.id.noContactsText);
         adjustContactVisibility(contactsAdapter);
 
-        //addContact.setText(contactName);
         return rootView;
     }
     @Override
@@ -221,9 +223,9 @@ public class ContactsFragment extends BaseFragment implements FabClickListener{
     }
 
     @Override
-    public void fabClickListener() {
+    public void fabClickAction() {
         //startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
-        //FloatingActionButton fab = (FloatingActionButton) ACA.findViewById(R.id.fab);
         Toast.makeText(ACA,"WE ARE IN CONTACTS",Toast.LENGTH_SHORT).show();
+        startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
     }
 }

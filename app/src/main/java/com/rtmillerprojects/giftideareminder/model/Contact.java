@@ -24,8 +24,8 @@ public class Contact {
     public Bitmap getProfilePhoto() {
         return profilePhoto;
     }
-    public void setProfilePhoto(Bitmap profilePhotoUrl) {
-        this.profilePhoto = profilePhotoUrl;
+    public void setProfilePhoto(Bitmap profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     public String getName() {

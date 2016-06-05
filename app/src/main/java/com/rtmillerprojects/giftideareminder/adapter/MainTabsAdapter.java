@@ -7,6 +7,8 @@ package com.rtmillerprojects.giftideareminder.adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.rtmillerprojects.giftideareminder.ui.ContactsFragment;
 import com.rtmillerprojects.giftideareminder.ui.AgendaFragment;
@@ -22,9 +24,20 @@ public class MainTabsAdapter extends FragmentPagerAdapter {
     public final int CONTACTS_FRAGMENT = 1;
     public final int GIFTS_FRAGMENT = 2;
 
+    public Fragment mCurrentView;
 
     public MainTabsAdapter(FragmentManager fm) {
         super(fm);
+    }
+
+
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        mCurrentView = (Fragment) object;
+    }
+
+    public Fragment getPrimaryItem(){
+        return mCurrentView;
     }
 
     @Override

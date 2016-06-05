@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.ParseException;
 import android.util.Log;
 
 import com.rtmillerprojects.giftideareminder.model.AgendaItem;
@@ -36,6 +37,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String EVENT_TITLE = "title";
     private static final String EVENT_RECURRING = "recurring";
     private static final String EVENT_RECURRATE = "recurrate";
+    private static final String EVENT_IMAGE = "image";
+
     // Contacts columns
     private static final String CONTACT_NAME = "name";
     private static final String CONTACT_IMAGE = "image";
@@ -52,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             EVENT_DATE + " DATE," +
             EVENT_RECURRING + " BOOLEAN," +
             EVENT_RECURRATE + " TEXT," +
+            EVENT_IMAGE + " BLOB," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE " + TABLE_CONTACTS + "(" +
@@ -179,6 +183,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             c.moveToFirst();
         }
         return contacts;
+    }
+
+    public ArrayList<AgendaItem> getAllAgendaItems() {
+        ArrayList<AgendaItem> agendaItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_AGENDA_ITEMS;
+        /* Specified record
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS + " WHERE "
+                + KEY_ID + " = " + todo_id;
+        */
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                AgendaItem dbAgendaItem = new AgendaItem();
+                dbAgendaItem.setTitle(c.getString(c.getColumnIndex(EVENT_TITLE)));
+                try{
+                    Date dbDate = new Date(c.getLong(c.getColumnIndex(EVENT_DATE)*1000));
+                    dbAgendaItem.setDate(dbDate);
+                } catch(ParseException e) {
+                    e.printStackTrace();
+                }
+                int isRecurring = c.getInt(c.getColumnIndex(EVENT_RECURRING));
+                dbAgendaItem.setRecurRate(c.getString(c.getColumnIndex(EVENT_RECURRATE)));
+                //Handle date type incompatibilities
+                if(isRecurring==1){dbAgendaItem.setRecurring(true);}
+                else{dbAgendaItem.setRecurring(false);}
+
+                if(c.getBlob(c.getColumnIndex(EVENT_IMAGE))==null) {}
+                else{
+                    dbAgendaItem.setEventImage(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(EVENT_IMAGE))));
+                }
+                agendaItems.add(dbAgendaItem);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return agendaItems;
     }
 
 

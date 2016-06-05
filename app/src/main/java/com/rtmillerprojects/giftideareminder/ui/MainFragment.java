@@ -20,11 +20,8 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
-import com.rtmillerprojects.giftideareminder.adapter.ContactsAdapter;
 import com.rtmillerprojects.giftideareminder.adapter.MainTabsAdapter;
 import com.rtmillerprojects.giftideareminder.listener.FabClickListener;
 import com.rtmillerprojects.giftideareminder.listener.MainListener;
@@ -62,17 +59,16 @@ public class MainFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                       Bundle savedInstanceState) {
+    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.main_fragment, container, false);
 
         //Toolbar Stuff
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        ACA.setSupportActionBar(toolbar);
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         viewPager = (ViewPager) rootView.findViewById(R.id.view_pager);
         fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
-        ACA.setSupportActionBar(toolbar);
         ACA.getSupportActionBar().setTitle("Programmatic title");
 
         //View Pager stuff
@@ -80,15 +76,7 @@ public class MainFragment extends BaseFragment {
         viewPager.setAdapter(mainTabsAdapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            View.OnClickListener fabClick = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FabClickListener currentFrag = (FabClickListener) mainTabsAdapter.getItem(viewPager.getCurrentItem());
-                    currentFrag.fabClickListener();
-                }
-            };
             @Override public void onPageSelected(int position) {
-                fab.setOnClickListener(fabClick);
                 animateFab(position);
             }
             @Override public void onPageScrollStateChanged(int state) {
@@ -97,6 +85,17 @@ public class MainFragment extends BaseFragment {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
         });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment currentFrag = mainTabsAdapter.getPrimaryItem();
+                FabClickListener myFrag = (FabClickListener) currentFrag;
+                myFrag.fabClickAction();
+                currentFrag.getView();
+            }
+        });
+
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.getTabAt(0).setText("").setIcon(R.drawable.calendar);
         tabLayout.getTabAt(1).setText("").setIcon(R.drawable.contacts80);

@@ -1,5 +1,7 @@
 package com.rtmillerprojects.giftideareminder.model;
 
+import android.graphics.Bitmap;
+
 import java.util.Date;
 
 /**
@@ -12,6 +14,7 @@ public class AgendaItem {
     private String title;
     private boolean recurring;
     private String recurrate;
+    private Bitmap eventImage;
 
     public AgendaItem(Contact contact, String title, String notes, Date date){
         this.date = date;
@@ -19,6 +22,7 @@ public class AgendaItem {
         this.notes = notes;
         this.title = title;
     };
+    public AgendaItem(){};
 
     public String getTitle(){ return title;}
     public void setTitle(String title){this.title = title;}
@@ -31,4 +35,11 @@ public class AgendaItem {
 
     public String getRecurRate(){ return recurrate;}
     public void setRecurRate(String recurrate){this.recurrate = recurrate;}
+
+    public Bitmap getEventImage() {
+        return eventImage;
+    }
+    public void setEventImage(Bitmap eventImage) {
+        this.eventImage = eventImage;
+    }
 }
