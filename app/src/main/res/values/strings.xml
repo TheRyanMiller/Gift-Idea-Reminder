@@ -65,7 +65,7 @@
     <string-array name="recurrence_options">
         <item>Yearly</item>
         <item>Monthly</item>
-        <item>Other</item>
+        <item>Same day of the week</item>
     </string-array>
 
 </resources>

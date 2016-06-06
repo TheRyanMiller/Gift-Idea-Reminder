@@ -1,94 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent" >
 
-    <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/editEventToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDark">
-        </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
-
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_gray_200"
-        android:fillViewport="true"
-        android:fitsSystemWindows="true"
-        tools:context=".ui.EditEventActivity"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true">
 
-
-
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/view_spacing_small">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            xmlns:android="http://schemas.android.com/apk/res/android">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Event Name"/>
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Event Date"/>
-            <EditText
-                android:id="@+id/selectedDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Here is the date"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Event Name"/>
-            <Switch
-                android:id="@+id/recurring_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Recurrence"/>
-            <Spinner
-                android:id="@+id/recurrence_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/editEventToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimaryDark">
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
 
-            values.put(EVENT_DATE, dateFormat.format(agendaItem.getDate()));
-            values.put(EVENT_TITLE, agendaItem.getTitle());
-            values.put(EVENT_RECURRING, agendaItem.getRecurring());
-            values.put(EVENT_RECURRATE, agendaItem.getRecurRate());
-            values.put(KEY_CREATED_AT, getDateTime());
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/material_gray_200"
+            android:fillViewport="true"
+            android:fitsSystemWindows="true"
+            tools:context=".ui.EditEventActivity"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="invisible">
+                android:orientation="vertical"
+                android:paddingTop="@dimen/view_spacing_small">
 
-            </FrameLayout>
-        </LinearLayout>
-    </ScrollView>
-</android.support.design.widget.CoordinatorLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Event Name"/>
+                <EditText
+                    android:id="@+id/agenda_item_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hello"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Event Date"/>
+                <EditText
+                    android:id="@+id/selectedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Here is the date"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recurring"/>
+                <Switch
+                    android:id="@+id/recurring_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recurrence rate"/>
+                <Spinner
+                    android:id="@+id/recurrence_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible">
+
+                </FrameLayout>
+            </LinearLayout>
+        </ScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_save_event"
+            android:layout_height="35dp"
+            android:text="Save"
+            android:layout_weight="1"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent" />
+
+        <Button
+            android:id="@+id/btn_cancel_event"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_height="35dp"
+            android:text="CANCEL"
+            android:layout_weight="1"
+            android:layout_width="match_parent" />
+    </LinearLayout>
+</RelativeLayout>

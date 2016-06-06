@@ -134,7 +134,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
         ContentValues values = new ContentValues();
-        values.put(EVENT_DATE, dateFormat.format(agendaItem.getDate()));
+        if(agendaItem.getDate()!=null){
+            values.put(EVENT_DATE, dateFormat.format(agendaItem.getDate()));
+        }
+        else{values.put(EVENT_DATE, getDateTime());}
         values.put(EVENT_TITLE, agendaItem.getTitle());
         values.put(EVENT_RECURRING, agendaItem.getRecurring());
         values.put(EVENT_RECURRATE, agendaItem.getRecurRate());
