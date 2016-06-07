@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper sInstance;
     private static final String TAG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "giftymcgiftface.db";
     public static final String TABLE_AGENDA_ITEMS = "agenda_items";
     public static final String TABLE_CONTACTS = "contacts";
@@ -52,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_AGENDA_ITEMS = "CREATE TABLE " +
             TABLE_AGENDA_ITEMS + "(" + KEY_ID + " INTEGER PRIMARY KEY," +
+            EVENT_TITLE + " TEXT," +
             EVENT_DATE + " DATE," +
             EVENT_RECURRING + " BOOLEAN," +
             EVENT_RECURRATE + " TEXT," +
