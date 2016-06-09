@@ -203,7 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 AgendaItem dbAgendaItem = new AgendaItem();
                 dbAgendaItem.setTitle(c.getString(c.getColumnIndex(EVENT_TITLE)));
                 try{
-                    Date dbDate = new Date(c.getLong(c.getColumnIndex(EVENT_DATE)*1000));
+                    Date dbDate = new Date(c.getLong(c.getColumnIndex(EVENT_DATE))*1000);
                     dbAgendaItem.setDate(dbDate);
                 } catch(ParseException e) {
                     e.printStackTrace();

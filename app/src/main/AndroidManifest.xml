@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.EditEventActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ui.MainActivity">
             <intent-filter>
                 <action android:name=".ui.EditEventActivity" />
                 <category android:name="android.intent.category.DEFAULT" />

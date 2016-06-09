@@ -1,6 +1,8 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +46,9 @@ public class GiftsFragment extends BaseFragment implements FabClickListener{
     private String mCurrentPhotoPath;
     private Button takePicture;
     private View rootView;
+    private File photoFile;
+    private ImageView imageView;
+    private Uri mImageUri;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 2;
 
@@ -53,6 +59,7 @@ public class GiftsFragment extends BaseFragment implements FabClickListener{
         }
         rootView = inflater.inflate(R.layout.gifts_fragment, container, false);
         takePicture = (Button) rootView.findViewById(R.id.btn_take_picture);
+        imageView = (ImageView) rootView.findViewById(R.id.imageView2);
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +86,7 @@ public class GiftsFragment extends BaseFragment implements FabClickListener{
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(ACA.getPackageManager()) != null) {
             // Create the File where the photo should go
-            File photoFile = null;
+            photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
@@ -87,19 +94,47 @@ public class GiftsFragment extends BaseFragment implements FabClickListener{
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(photoFile));
+                mImageUri=Uri.fromFile(photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
         }
     }
 
+    /*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
+        }
+    }
+    */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+        if(requestCode==REQUEST_TAKE_PHOTO && resultCode==ACA.RESULT_OK)
+        {
+            //... some code to inflate/create/find appropriate ImageView to place grabbed image
+            grabImage(imageView);
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
+    public void grabImage(ImageView imageView)
+    {
+        ACA.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = ACA.getContentResolver();
+        Bitmap bitmap;
+        try
+        {
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            imageView.setImageBitmap(bitmap);
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(ACA, "Failed to load", Toast.LENGTH_SHORT).show();
+            Log.d("TAG", "Failed to load", e);
         }
     }
 
@@ -134,15 +169,18 @@ public class GiftsFragment extends BaseFragment implements FabClickListener{
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File mediaFile = new File(storageDir.getPath() + File.separator +
+                "IMG_"+ timeStamp + ".jpg");
+        /*
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,
+                ".jpg",
+                storageDir
         );
-
+        */
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
+        mCurrentPhotoPath = "file:" + mediaFile.getAbsolutePath();
+        return mediaFile;
     }
 
 

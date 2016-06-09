@@ -96,6 +96,7 @@ public class EditEventActivity extends AppCompatActivity{
         ai.setRecurRate(spinner.getSelectedItem().toString());
         //ai.setEventImage();
         db.insertAgendaItem(ai);
+        NavUtils.navigateUpFromSameTask(this);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

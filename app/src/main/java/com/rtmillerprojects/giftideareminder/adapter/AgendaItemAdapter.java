@@ -43,7 +43,7 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Ag
     @Override
     public AgendaItemAdapter.AgendaItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         //Inflate Layout
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_contact, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_agenda_item, parent, false);
         AgendaItemViewHolder vh = new AgendaItemViewHolder(v);
         return vh;
     }
