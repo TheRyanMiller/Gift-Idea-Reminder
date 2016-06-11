@@ -68,4 +68,8 @@
         <item>Same day of the week</item>
     </string-array>
 
+    <!-- Forms Strings -->
+    <string name="hint_event_title">Enter title</string>
+    <string name="hint_event_date">Enter date</string>
+
 </resources>
