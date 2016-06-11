@@ -24,14 +24,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper sInstance;
     private static final String TAG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
+
+    //Table Defs
     public static final String DATABASE_NAME = "giftymcgiftface.db";
     public static final String TABLE_AGENDA_ITEMS = "agenda_items";
     public static final String TABLE_CONTACTS = "contacts";
     public static final String TABLE_GIFTS = "gifts";
+    public static final String TABLE_CONTACTS_GIFTS = "contacts_gifts";
+    public static final String TABLE_CONTACTS_EVENTS = "contacts_events";
+    public static final String TABLE_EVENTS_GIFTS = "events_gifts";
+
     // Common column names
     private static final String KEY_ID = "id";
+    private static final String CONTACTS_ID = "contacts_id";
+    private static final String GIFTS_ID = "gifts_id";
+    private static final String EVENTS_ID = "events_id";
     private static final String KEY_CREATED_AT = "created_at";
+
     // Agenda items columns
     private static final String EVENT_DATE = "date";
     private static final String EVENT_TITLE = "title";
@@ -73,6 +83,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             PHOTO_LOCATION + " TEXT," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
+    //Create Associative tables
+    private static final String CREATE_TABLE_CONTACTS_GIFTS = "CREATE TABLE " + TABLE_CONTACTS_GIFTS + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY," +
+            CONTACTS_ID + " INTEGER," +
+            GIFTS_ID + " INTEGER," +
+            KEY_CREATED_AT + " DATETIME" + ")";
+
+    private static final String CREATE_TABLE_CONTACTS_EVENTS = "CREATE TABLE " + TABLE_CONTACTS_EVENTS + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY," +
+            CONTACTS_ID + " INTEGER," +
+            EVENTS_ID + " INTEGER," +
+            KEY_CREATED_AT + " DATETIME" + ")";
+
+    private static final String CREATE_TABLE_EVENTS_GIFTS = "CREATE TABLE " + TABLE_EVENTS_GIFTS + "(" +
+            KEY_ID + " INTEGER PRIMARY KEY," +
+            EVENTS_ID + " INTEGER," +
+            GIFTS_ID + " INTEGER," +
+            KEY_CREATED_AT + " DATETIME" + ")";
+
 
     public static synchronized DatabaseHelper getInstance(Context context){
         // Use the application context, which will ensure that you
@@ -95,6 +124,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_AGENDA_ITEMS);
         db.execSQL(CREATE_TABLE_CONTACTS);
         db.execSQL(CREATE_TABLE_GIFTS);
+        db.execSQL(CREATE_TABLE_CONTACTS_EVENTS);
+        db.execSQL(CREATE_TABLE_CONTACTS_GIFTS);
+        db.execSQL(CREATE_TABLE_EVENTS_GIFTS);
     }
 
     @Override
@@ -103,6 +135,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_AGENDA_ITEMS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GIFTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS_EVENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS_GIFTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EVENTS_GIFTS);
         // create new tables
         onCreate(db);
     }
@@ -147,6 +182,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long agendaItemId = db.insert(TABLE_AGENDA_ITEMS, null, values);
         return agendaItemId;
     }
+
     public long insertGift(Gift gift) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -162,6 +198,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return contactId;
     }
+
+    public long tagContactGift(long contactId, long giftId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACTS_ID, contactId);
+        values.put(GIFTS_ID, giftId);
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long tagId = db.insert(TABLE_CONTACTS_GIFTS, null, values);
+        return tagId;
+    }
+    public long tagContactEvent(long contactId, long eventId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACTS_ID, contactId);
+        values.put(EVENTS_ID, eventId);
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long tagId = db.insert(TABLE_CONTACTS_EVENTS, null, values);
+        return tagId;
+    }
+    public long tagEventGift(long eventId, long giftId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(EVENTS_ID, eventId);
+        values.put(GIFTS_ID, giftId);
+        values.put(KEY_CREATED_AT, getDateTime());
+
+        // insert row
+        long tagId = db.insert(TABLE_EVENTS_GIFTS, null, values);
+        return tagId;
+    }
+
     public ArrayList<Contact> getAllContacts() {
         ArrayList<Contact> contacts = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

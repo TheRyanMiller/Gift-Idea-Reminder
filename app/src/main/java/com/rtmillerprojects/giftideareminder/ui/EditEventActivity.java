@@ -1,6 +1,7 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class EditEventActivity extends AppCompatActivity{
     EditText eventTitle;
     EditText selectedDate;
     Switch recurringSwitch;
+    LinearLayout addContactTag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,13 @@ public class EditEventActivity extends AppCompatActivity{
         eventTitle = (EditText) findViewById(R.id.agenda_item_title);
         selectedDate = (EditText) findViewById(R.id.selectedDate);
         recurringSwitch = (Switch) findViewById(R.id.recurring_switch);
-
+        addContactTag = (LinearLayout) findViewById(R.id.addcontacttag);
+        addContactTag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Bundle extras = getIntent().getExtras();
         if (toolbar != null) {

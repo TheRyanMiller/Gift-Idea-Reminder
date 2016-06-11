@@ -85,6 +85,22 @@
                     android:layout_height="wrap_content"
                     />
 
+
+                <include
+                    android:id="@+id/addcontacttag"
+                    layout="@layout/row_tag_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                />
+                <include
+                    android:id="@+id/addgifttag"
+                    layout="@layout/row_tag_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="5dp"
+                    />
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
