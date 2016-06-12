@@ -87,15 +87,15 @@
 
 
                 <include
-                    android:id="@+id/addcontacttag"
-                    layout="@layout/row_tag_edit"
+                    android:id="@+id/edit_contact_tag"
+                    layout="@layout/banner_edit_tag"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_margin="5dp"
                 />
                 <include
-                    android:id="@+id/addgifttag"
-                    layout="@layout/row_tag_edit"
+                    android:id="@+id/edit_gift_tag"
+                    layout="@layout/banner_edit_tag"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_margin="5dp"

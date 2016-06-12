@@ -21,7 +21,8 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical"
         android:textAlignment="center"
-        android:text="Add Tag"
+        android:text=""
+        android:id="@+id/edit_tag_text"
         />
 
 

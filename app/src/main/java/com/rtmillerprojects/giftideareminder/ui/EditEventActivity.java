@@ -1,8 +1,10 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,7 +35,8 @@ public class EditEventActivity extends AppCompatActivity{
     EditText eventTitle;
     EditText selectedDate;
     Switch recurringSwitch;
-    LinearLayout addContactTag;
+    LinearLayout editContactTag;
+    LinearLayout editGiftTag;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,10 +49,14 @@ public class EditEventActivity extends AppCompatActivity{
         eventTitle = (EditText) findViewById(R.id.agenda_item_title);
         selectedDate = (EditText) findViewById(R.id.selectedDate);
         recurringSwitch = (Switch) findViewById(R.id.recurring_switch);
-        addContactTag = (LinearLayout) findViewById(R.id.addcontacttag);
-        addContactTag.setOnClickListener(new View.OnClickListener() {
+        editContactTag = (LinearLayout) findViewById(R.id.edit_contact_tag);
+        editGiftTag = (LinearLayout) findViewById(R.id.edit_gift_tag);
+        ((TextView) editContactTag.findViewById(R.id.edit_tag_text)).setText("Tag some contacts");
+        ((TextView) editGiftTag.findViewById(R.id.edit_tag_text)).setText("Tag some gifts");
+        editContactTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showContactTags();
                 Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
             }
         });
@@ -117,5 +124,10 @@ public class EditEventActivity extends AppCompatActivity{
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void showContactTags(){
+        TagDialog tagDialog = new TagDialog();
+        tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
+    };
 
 }
