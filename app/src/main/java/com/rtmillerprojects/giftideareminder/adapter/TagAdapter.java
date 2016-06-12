@@ -11,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
 import com.rtmillerprojects.giftideareminder.model.Contact;
+import com.rtmillerprojects.giftideareminder.ui.EditEventActivity;
+import com.rtmillerprojects.giftideareminder.ui.NameValuePair;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -24,39 +27,47 @@ import butterknife.ButterKnife;
 /**
  * Created by Ryan on 5/29/2016.
  */
-public class TagAdapter extends RecyclerView.Adapter {
+public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
     private ArrayList<String> tags;
     private Context context;
-    private CheckBox tag;
-    private DatabaseHelper db;
-    private ArrayList<Contact> allContacts;
+    private ArrayList<NameValuePair> nameIdPairs;
 
-    public TagAdapter(ArrayList<String> tags, Context context) {
-        /*
-        db = DatabaseHelper.getInstance(context);
-        allContacts = db.getAllContacts();
-        for (Contact contact : allContacts) {
-            contactNames.add(contact.getName());
-        }
-        */
-        this.tags = tags;
+    public TagAdapter(ArrayList<NameValuePair> nameIdPairs, Context context){
         this.context = context;
+        this.nameIdPairs = nameIdPairs;
+    }
 
+    public static class TagViewHolder extends RecyclerView.ViewHolder {
+        public CheckBox tagCheckBox;
+        private Context context;
+        public TagViewHolder(View v, final Context context) {
+            super(v);
+            tagCheckBox = (CheckBox) v.findViewById(R.id.tagCheckBox);
+            tagCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
+        }
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+    public TagViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_edit_tag, parent, false);
+        TagViewHolder vh = new TagViewHolder(v, context);
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+    public void onBindViewHolder(TagViewHolder holder, int position) {
+        holder.tagCheckBox.setText(nameIdPairs.get(position).name);
     }
-
-
 
     @Override public int getItemCount() {
-        return tags.size();
+        return nameIdPairs.size();
+    }
+    public NameValuePair getTagPair(int i) {
+        return nameIdPairs.get(i);
     }
 }

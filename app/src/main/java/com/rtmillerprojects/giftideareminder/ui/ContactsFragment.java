@@ -217,11 +217,6 @@ public class ContactsFragment extends BaseFragment implements FabClickListener{
         }
     }
 
-    private void doStuff(){
-        DatabaseHelper db;
-        db = DatabaseHelper.getInstance(ACA);
-    }
-
     @Override
     public void fabClickAction() {
         //startActivityForResult(new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
