@@ -1,5 +1,6 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -11,12 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
-import com.rtmillerprojects.giftideareminder.adapter.ContactsAdapter;
 import com.rtmillerprojects.giftideareminder.adapter.TagAdapter;
 import com.rtmillerprojects.giftideareminder.model.Contact;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
@@ -31,11 +29,20 @@ public class TagDialog extends DialogFragment{
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private ArrayList<Contact> allContacts;
-    private ArrayList<String> contactNames;
-    private ArrayList<NameValuePair> contactPairs;
+    private ArrayList<Contact> selectedContacts;
+    private ArrayList<NameValueCheck> tagPairs;
+    private ArrayList<NameValueCheck> selectedTagPairs;
     private DatabaseHelper db;
     private String str;
+    private long recordId;
+    private String tagType;
 
+    public TagDialog(){/*required public constructor*/}
+    @SuppressLint("ValidFragment")
+    public TagDialog(String tagType, long recordId){
+        this.tagType = tagType;
+        this.recordId = recordId;
+    };
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -47,16 +54,26 @@ public class TagDialog extends DialogFragment{
         layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        contactNames = new ArrayList<>();
+        //ABSTRACT THIS STUFF
         db = DatabaseHelper.getInstance(getActivity());
-        str="";
-        contactPairs = new ArrayList<>();
-        allContacts = db.getAllContacts();
-        for (Contact contact : allContacts) {
-            contactPairs.add((new NameValuePair(contact.getName(), (int) contact.getId())));
+        tagPairs = new ArrayList<>();
+        if(tagType == "contact"){
+            allContacts = db.getAllContacts();
+            selectedContacts = db.getSelectedContacts(recordId);
+            //Compare against selected list
+            for (Contact contact : allContacts) {
+                NameValueCheck tempNVC = new NameValueCheck(contact.getName(), (int) contact.getId());
+                for(Contact selContact : selectedContacts) {
+                    if(contact.getId() == selContact.getId()) {
+                        tempNVC.isChecked=true;
+                        break;
+                    }
+                }
+                tagPairs.add(tempNVC);
+            }
         }
-
-        final TagAdapter tagAdapter = new TagAdapter(contactPairs, getActivity()); //Maybe need to pass in a bunch of contact names here?
+        //FINISH ABSTRACTING STUFF
+        final TagAdapter tagAdapter = new TagAdapter(tagPairs, getActivity()); //Maybe need to pass in a bunch of contact names here?
         recyclerView.setAdapter(tagAdapter);
         recyclerView.setLayoutManager(layoutManager);
 

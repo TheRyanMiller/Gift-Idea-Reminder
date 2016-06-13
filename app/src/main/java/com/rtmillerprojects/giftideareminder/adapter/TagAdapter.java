@@ -1,28 +1,16 @@
 package com.rtmillerprojects.giftideareminder.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
-import com.rtmillerprojects.giftideareminder.model.Contact;
-import com.rtmillerprojects.giftideareminder.ui.EditEventActivity;
-import com.rtmillerprojects.giftideareminder.ui.NameValuePair;
-import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
+import com.rtmillerprojects.giftideareminder.ui.NameValueCheck;
 
 import java.util.ArrayList;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by Ryan on 5/29/2016.
@@ -30,11 +18,11 @@ import butterknife.ButterKnife;
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
     private ArrayList<String> tags;
     private Context context;
-    private ArrayList<NameValuePair> nameIdPairs;
+    private ArrayList<NameValueCheck> nameValueCheck;
 
-    public TagAdapter(ArrayList<NameValuePair> nameIdPairs, Context context){
+    public TagAdapter(ArrayList<NameValueCheck> nameValueCheck, Context context){
         this.context = context;
-        this.nameIdPairs = nameIdPairs;
+        this.nameValueCheck = nameValueCheck;
     }
 
     public static class TagViewHolder extends RecyclerView.ViewHolder {
@@ -61,13 +49,14 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.TagViewHolder> {
 
     @Override
     public void onBindViewHolder(TagViewHolder holder, int position) {
-        holder.tagCheckBox.setText(nameIdPairs.get(position).name);
+        holder.tagCheckBox.setText(nameValueCheck.get(position).name);
+        holder.tagCheckBox.setChecked(nameValueCheck.get(position).isChecked);
     }
 
     @Override public int getItemCount() {
-        return nameIdPairs.size();
+        return nameValueCheck.size();
     }
-    public NameValuePair getTagPair(int i) {
-        return nameIdPairs.get(i);
+    public NameValueCheck getTagPair(int i) {
+        return nameValueCheck.get(i);
     }
 }

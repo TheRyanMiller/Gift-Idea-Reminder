@@ -299,6 +299,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return agendaItems;
     }
 
+    public ArrayList<Contact> getSelectedContacts(long recordId){
+        ArrayList<Contact> contacts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        //String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
+
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS + " WHERE "
+                + KEY_ID + " = " + recordId;
+
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                Contact dbContact = new Contact();
+                dbContact.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbContact.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
+                dbContact.setRelationship(c.getString(c.getColumnIndex(CONTACT_RELATIONSHIP)));
+                if(c.getBlob(c.getColumnIndex(CONTACT_IMAGE))==null) {}
+                else{
+                    dbContact.setProfilePhoto(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(CONTACT_IMAGE))));
+                }
+                contacts.add(dbContact);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return contacts;
+    }
 
     private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(

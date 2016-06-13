@@ -57,7 +57,6 @@ public class EditEventActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 showContactTags();
-                Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -126,7 +125,7 @@ public class EditEventActivity extends AppCompatActivity{
     }
 
     public void showContactTags(){
-        TagDialog tagDialog = new TagDialog();
+        TagDialog tagDialog = new TagDialog("contact",1);
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
     };
 
