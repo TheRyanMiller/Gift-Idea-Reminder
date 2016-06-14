@@ -20,6 +20,7 @@ import com.rtmillerprojects.giftideareminder.model.Contact;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Ryan on 6/11/2016.
@@ -36,7 +37,7 @@ public class TagDialog extends DialogFragment{
     private String str;
     private long recordId;
     private String tagType;
-
+    private ArrayList<Integer> selectedTagIds;
     public TagDialog(){/*required public constructor*/}
     @SuppressLint("ValidFragment")
     public TagDialog(String tagType, long recordId){
@@ -57,9 +58,9 @@ public class TagDialog extends DialogFragment{
         //ABSTRACT THIS STUFF
         db = DatabaseHelper.getInstance(getActivity());
         tagPairs = new ArrayList<>();
-        if(tagType == "contact"){
+        if(tagType == "contactTagForEvent"){
             allContacts = db.getAllContacts();
-            selectedContacts = db.getSelectedContacts(recordId);
+            selectedContacts = db.getContactsTagsForEvent(recordId);
             //Compare against selected list
             for (Contact contact : allContacts) {
                 NameValueCheck tempNVC = new NameValueCheck(contact.getName(), (int) contact.getId());
@@ -71,12 +72,14 @@ public class TagDialog extends DialogFragment{
                 }
                 tagPairs.add(tempNVC);
             }
+
         }
+
         //FINISH ABSTRACTING STUFF
         final TagAdapter tagAdapter = new TagAdapter(tagPairs, getActivity()); //Maybe need to pass in a bunch of contact names here?
         recyclerView.setAdapter(tagAdapter);
         recyclerView.setLayoutManager(layoutManager);
-
+        str = "";
 
 
         builder .setView(dialogLayout)
@@ -88,14 +91,40 @@ public class TagDialog extends DialogFragment{
                         //RecyclerView recyclerView = (RecyclerView) (view != null ? view.findViewById(R.id.recycler_view_tags) : null);
                         int count = recyclerView.getAdapter().getItemCount();
                         CheckBox chkbox;
+                        selectedTagIds = new ArrayList<>();
                         for(int i=0;i<count;i++){
                             chkbox = (CheckBox) recyclerView.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tagCheckBox);
                             if(chkbox.isChecked()) {
+                                selectedTagIds.add(tagAdapter.getTagPair(i).value);
                                 str = str + tagAdapter.getTagPair(i).value+ ", ";
                             }
                         }
                         str=str.substring(0,str.length()-2);
                         Toast.makeText(getActivity(),str,Toast.LENGTH_SHORT).show();
+                        if(tagType=="contactTagForEvent"){
+                            db.deleteContactTagsForEvent(recordId);
+                            db.insertContactTagsForEvent(recordId, selectedTagIds);
+                        }
+                        if(tagType=="contactTagForGift"){
+                            db.deleteContactTagsForGift(recordId);
+                            db.insertContactTagsForGift(recordId, selectedTagIds);
+                        }
+                        if(tagType=="eventTagForContact"){
+                            db.deleteEventTagsForContact(recordId);
+                            db.insertEventTagsForContact(recordId, selectedTagIds);
+                        }
+                        if(tagType=="eventTagForGift"){
+                            db.deleteEventTagsForGift(recordId);
+                            db.insertEventTagsForGift(recordId, selectedTagIds);
+                        }
+                        if(tagType=="giftTagForContact"){
+                            db.deleteGiftTagsForContact(recordId);
+                            db.insertGiftTagsForContact(recordId, selectedTagIds);
+                        }
+                        if(tagType=="giftTagForEvent"){
+                            db.deleteGiftTagsForEvent(recordId);
+                            db.insertGiftTagsForEvent(recordId, selectedTagIds);
+                        }
                     }
                 })
                 .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

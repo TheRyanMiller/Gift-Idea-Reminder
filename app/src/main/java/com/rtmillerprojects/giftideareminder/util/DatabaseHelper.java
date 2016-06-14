@@ -12,6 +12,7 @@ import com.rtmillerprojects.giftideareminder.model.AgendaItem;
 import com.rtmillerprojects.giftideareminder.model.Contact;
 import com.rtmillerprojects.giftideareminder.model.Gift;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -299,13 +300,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return agendaItems;
     }
 
-    public ArrayList<Contact> getSelectedContacts(long recordId){
+    public ArrayList<Contact> getContactsTagsForEvent(long eventId){
         ArrayList<Contact> contacts = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         //String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
 
-        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS + " WHERE "
-                + KEY_ID + " = " + recordId;
+        String selectQuery = "SELECT  contacts.* FROM " + TABLE_CONTACTS_EVENTS +
+                " JOIN "+ TABLE_CONTACTS+" on contacts.id = "+TABLE_CONTACTS_EVENTS+".contacts_id "+
+                " WHERE "
+                + EVENTS_ID + " = " + eventId;
 
         Log.e(TAG, selectQuery);
         Cursor c = db.rawQuery(selectQuery, null);
@@ -324,6 +327,98 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             c.moveToFirst();
         }
         return contacts;
+    }
+    public void insertContactTagsForEvent(long eventId, ArrayList<Integer> selectedTagIds){
+        if(selectedTagIds.size()>0){
+            SQLiteDatabase db = this.getReadableDatabase();
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                ContentValues cv = new ContentValues();
+                cv.put(CONTACTS_ID,selectedTagIds.get(i));
+                cv.put(EVENTS_ID,eventId);
+                db.insert(TABLE_CONTACTS_EVENTS,null,cv);
+            }
+        }
+
+    }
+    public void insertContactTagsForGift(long giftId, ArrayList<Integer> selectedTagIds){
+        if(selectedTagIds.size()>0){
+            SQLiteDatabase db = this.getReadableDatabase();
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                ContentValues cv = new ContentValues();
+                cv.put(CONTACTS_ID,selectedTagIds.get(i));
+                cv.put(GIFTS_ID,giftId);
+                db.insert(TABLE_CONTACTS_GIFTS,null,cv);
+            }
+        }
+    }
+    public void insertEventTagsForContact(long contactId, ArrayList<Integer> selectedTagIds){
+        if(selectedTagIds.size()>0){
+            SQLiteDatabase db = this.getReadableDatabase();
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                ContentValues cv = new ContentValues();
+                cv.put(EVENTS_ID,selectedTagIds.get(i));
+                cv.put(CONTACTS_ID,contactId);
+                db.insert(TABLE_CONTACTS_EVENTS,null,cv);
+            }
+        }
+    }
+    public void insertEventTagsForGift(long giftId, ArrayList<Integer> selectedTagIds){
+        if(selectedTagIds.size()>0){
+            SQLiteDatabase db = this.getReadableDatabase();
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                ContentValues cv = new ContentValues();
+                cv.put(EVENTS_ID,selectedTagIds.get(i));
+                cv.put(GIFTS_ID,giftId);
+                db.insert(TABLE_EVENTS_GIFTS,null,cv);
+            }
+        }
+    }
+    public void insertGiftTagsForEvent(long eventId, ArrayList<Integer> selectedTagIds){
+        if(selectedTagIds.size()>0){
+            SQLiteDatabase db = this.getReadableDatabase();
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                ContentValues cv = new ContentValues();
+                cv.put(GIFTS_ID,selectedTagIds.get(i));
+                cv.put(EVENTS_ID,eventId);
+                db.insert(TABLE_EVENTS_GIFTS,null,cv);
+            }
+        }
+    }
+    public void insertGiftTagsForContact(long contactId, ArrayList<Integer> selectedTagIds){
+        if(selectedTagIds.size()>0){
+            SQLiteDatabase db = this.getReadableDatabase();
+            for (int i = 0; i < selectedTagIds.size(); i++) {
+                ContentValues cv = new ContentValues();
+                cv.put(GIFTS_ID,selectedTagIds.get(i));
+                cv.put(CONTACTS_ID,contactId);
+                db.insert(TABLE_CONTACTS_GIFTS,null,cv);
+            }
+        }
+    }
+
+    public void deleteContactTagsForEvent(long eventId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_CONTACTS_EVENTS,EVENTS_ID+"="+eventId,null);
+    }
+    public void deleteContactTagsForGift(long giftId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_CONTACTS_GIFTS,GIFTS_ID+"="+giftId,null);
+    }
+    public void deleteGiftTagsForEvent(long eventId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_EVENTS_GIFTS,EVENTS_ID+"="+eventId,null);
+    }
+    public void deleteGiftTagsForContact(long contactId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_CONTACTS_GIFTS,CONTACTS_ID+"="+contactId,null);
+    }
+    public void deleteEventTagsForContact(long contactId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_CONTACTS_EVENTS,EVENTS_ID+"="+contactId,null);
+    }
+    public void deleteEventTagsForGift(long giftId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(TABLE_EVENTS_GIFTS,GIFTS_ID+"="+giftId,null);
     }
 
     private String getDateTime() {
