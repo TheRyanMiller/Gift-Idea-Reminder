@@ -56,8 +56,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CONTACT_RELATIONSHIP = "relationship";
     // Gifts columns
     private static final String GIFT_NAME = "name";
-    private static final String URL = "url";
-    private static final String PHOTO_LOCATION = "photo_location";
+    private static final String GIFT_URL = "url";
+    private static final String GIFT_PHOTO_LOCATION = "photo_location";
     private static final String GIFT_NOTES = "notes";
 
 
@@ -80,8 +80,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_GIFTS = "CREATE TABLE " + TABLE_GIFTS + "(" +
             KEY_ID + " INTEGER PRIMARY KEY," +
             GIFT_NAME + " TEXT," +
-            URL + " TEXT," +
-            PHOTO_LOCATION + " TEXT," +
+            GIFT_URL + " TEXT," +
+            GIFT_PHOTO_LOCATION + " TEXT," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     //Create Associative tables
@@ -189,8 +189,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(GIFT_NAME, gift.getName());
-        values.put(URL, gift.getUrl());
-        values.put(PHOTO_LOCATION, gift.getPhotoLocation());
+        values.put(GIFT_URL, gift.getUrl());
+        values.put(GIFT_PHOTO_LOCATION, gift.getPhotoLocation());
         values.put(GIFT_NOTES, gift.getNotes());
         values.put(KEY_CREATED_AT, getDateTime());
 
@@ -264,6 +264,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return contacts;
     }
 
+    public ArrayList<Gift> getAllGifts() {
+        ArrayList<Gift> gifts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_GIFTS;
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                Gift dbGift = new Gift();
+                dbGift.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbGift.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
+                dbGift.setNotes(c.getString(c.getColumnIndex(GIFT_NOTES)));
+                dbGift.setPhotoLocation(c.getString(c.getColumnIndex(GIFT_PHOTO_LOCATION)));
+                dbGift.setUrl(c.getString(c.getColumnIndex(GIFT_URL)));
+                gifts.add(dbGift);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return gifts;
+    }
+
     public ArrayList<AgendaItem> getAllAgendaItems() {
         ArrayList<AgendaItem> agendaItems = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -300,11 +320,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return agendaItems;
     }
 
-    public ArrayList<Contact> getContactsTagsForEvent(long eventId){
+    public ArrayList<Contact> getContactTagsForEvent(long eventId){
         ArrayList<Contact> contacts = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        //String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
-
         String selectQuery = "SELECT  contacts.* FROM " + TABLE_CONTACTS_EVENTS +
                 " JOIN "+ TABLE_CONTACTS+" on contacts.id = "+TABLE_CONTACTS_EVENTS+".contacts_id "+
                 " WHERE "
@@ -328,6 +346,137 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return contacts;
     }
+    public ArrayList<Contact> getContactTagsForGift(long giftId){
+        ArrayList<Contact> contacts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  contacts.* FROM " + TABLE_CONTACTS_GIFTS +
+                " JOIN "+ TABLE_CONTACTS+" on contacts.id = "+TABLE_CONTACTS_GIFTS+".contacts_id "+
+                " WHERE "
+                + GIFTS_ID + " = " + giftId;
+
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                Contact dbContact = new Contact();
+                dbContact.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbContact.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
+                dbContact.setRelationship(c.getString(c.getColumnIndex(CONTACT_RELATIONSHIP)));
+                if(c.getBlob(c.getColumnIndex(CONTACT_IMAGE))==null) {}
+                else{
+                    dbContact.setProfilePhoto(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(CONTACT_IMAGE))));
+                }
+                contacts.add(dbContact);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return contacts;
+    }
+    public ArrayList<Gift> getGiftTagsForContact (long contactId){
+        ArrayList<Gift> gifts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  "+TABLE_GIFTS+".* FROM " + TABLE_CONTACTS_GIFTS +
+                " JOIN "+ TABLE_GIFTS+" on gifts.id = "+TABLE_CONTACTS_GIFTS+".gifts_id "+
+                " WHERE "
+                + CONTACTS_ID + " = " + contactId;
+
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                Gift dbGift = new Gift();
+                dbGift.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbGift.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
+                dbGift.setNotes(c.getString(c.getColumnIndex(GIFT_NOTES)));
+                dbGift.setPhotoLocation(c.getString(c.getColumnIndex(GIFT_PHOTO_LOCATION)));
+                dbGift.setUrl(c.getString(c.getColumnIndex(GIFT_URL)));
+                gifts.add(dbGift);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return gifts;
+    }
+    public ArrayList<Gift> getGiftTagsForEvent (long eventId){
+        ArrayList<Gift> gifts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  "+TABLE_GIFTS+".* FROM " + TABLE_EVENTS_GIFTS +
+                " JOIN "+ TABLE_GIFTS+" on gifts.id = "+TABLE_EVENTS_GIFTS+".gifts_id "+
+                " WHERE "
+                + EVENTS_ID + " = " + eventId;
+
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                Gift dbGift = new Gift();
+                dbGift.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbGift.setName(c.getString(c.getColumnIndex(CONTACT_NAME)));
+                dbGift.setNotes(c.getString(c.getColumnIndex(GIFT_NOTES)));
+                dbGift.setPhotoLocation(c.getString(c.getColumnIndex(GIFT_PHOTO_LOCATION)));
+                dbGift.setUrl(c.getString(c.getColumnIndex(GIFT_URL)));
+                gifts.add(dbGift);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return gifts;
+    }
+    public ArrayList<AgendaItem> getEventTagsForContact (long contactId){
+        ArrayList<AgendaItem> events = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  "+TABLE_AGENDA_ITEMS+".* FROM " + TABLE_CONTACTS_EVENTS +
+                " JOIN "+ TABLE_AGENDA_ITEMS+" on events_id = "+TABLE_CONTACTS_EVENTS+".events_id "+
+                " WHERE "
+                + TABLE_CONTACTS_EVENTS + "."+CONTACTS_ID + " = " + contactId;
+
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                AgendaItem dbEvent = new AgendaItem();
+                dbEvent.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbEvent.setTitle(c.getString(c.getColumnIndex(EVENT_TITLE)));
+                dbEvent.setRecurRate(c.getString(c.getColumnIndex(EVENT_RECURRATE)));
+                if(c.getInt(c.getColumnIndex(EVENT_RECURRING))>0){dbEvent.setRecurring(true);}
+                else{dbEvent.setRecurring(false);}
+                if(c.getBlob(c.getColumnIndex(EVENT_IMAGE))==null) {}
+                else{
+                    dbEvent.setEventImage(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(EVENT_IMAGE))));
+                }
+                events.add(dbEvent);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return events;
+    }
+    public ArrayList<AgendaItem> getEventTagsForGift (long giftId){
+        ArrayList<AgendaItem> events = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  "+TABLE_AGENDA_ITEMS+".* FROM " + TABLE_EVENTS_GIFTS +
+                " JOIN "+ TABLE_AGENDA_ITEMS+" on events_id = "+TABLE_EVENTS_GIFTS+".events_id "+
+                " WHERE "
+                + TABLE_EVENTS_GIFTS + "."+GIFTS_ID + " = " + giftId;
+
+        Log.e(TAG, selectQuery);
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            do {
+                AgendaItem dbEvent = new AgendaItem();
+                dbEvent.setId(c.getInt(c.getColumnIndex(KEY_ID)));
+                dbEvent.setTitle(c.getString(c.getColumnIndex(EVENT_TITLE)));
+                dbEvent.setRecurRate(c.getString(c.getColumnIndex(EVENT_RECURRATE)));
+                if(c.getInt(c.getColumnIndex(EVENT_RECURRING))>0){dbEvent.setRecurring(true);}
+                else{dbEvent.setRecurring(false);}
+                if(c.getBlob(c.getColumnIndex(EVENT_IMAGE))==null) {}
+                else{
+                    dbEvent.setEventImage(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(EVENT_IMAGE))));
+                }
+                events.add(dbEvent);
+            } while(c.moveToNext());
+            c.moveToFirst();
+        }
+        return events;
+    }
+
     public void insertContactTagsForEvent(long eventId, ArrayList<Integer> selectedTagIds){
         if(selectedTagIds.size()>0){
             SQLiteDatabase db = this.getReadableDatabase();

@@ -16,7 +16,9 @@ import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
 import com.rtmillerprojects.giftideareminder.adapter.TagAdapter;
+import com.rtmillerprojects.giftideareminder.model.AgendaItem;
 import com.rtmillerprojects.giftideareminder.model.Contact;
+import com.rtmillerprojects.giftideareminder.model.Gift;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -30,7 +32,11 @@ public class TagDialog extends DialogFragment{
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private ArrayList<Contact> allContacts;
+    private ArrayList<Gift> allGifts;
+    private ArrayList<AgendaItem> allEvents;
     private ArrayList<Contact> selectedContacts;
+    private ArrayList<Gift> selectedGifts;
+    private ArrayList<AgendaItem> selectedEvents;
     private ArrayList<NameValueCheck> tagPairs;
     private ArrayList<NameValueCheck> selectedTagPairs;
     private DatabaseHelper db;
@@ -58,9 +64,9 @@ public class TagDialog extends DialogFragment{
         //ABSTRACT THIS STUFF
         db = DatabaseHelper.getInstance(getActivity());
         tagPairs = new ArrayList<>();
-        if(tagType == "contactTagForEvent"){
+        if(tagType == "contactTagsForEvent"){
             allContacts = db.getAllContacts();
-            selectedContacts = db.getContactsTagsForEvent(recordId);
+            selectedContacts = db.getContactTagsForEvent(recordId);
             //Compare against selected list
             for (Contact contact : allContacts) {
                 NameValueCheck tempNVC = new NameValueCheck(contact.getName(), (int) contact.getId());
@@ -72,7 +78,36 @@ public class TagDialog extends DialogFragment{
                 }
                 tagPairs.add(tempNVC);
             }
-
+        }
+        if(tagType == "contactTagsForGift"){
+            allContacts = db.getAllContacts();
+            selectedContacts = db.getContactTagsForGift(recordId);
+            //Compare against selected list
+            for (Contact contact : allContacts) {
+                NameValueCheck tempNVC = new NameValueCheck(contact.getName(), (int) contact.getId());
+                for(Contact selContact : selectedContacts) {
+                    if(contact.getId() == selContact.getId()) {
+                        tempNVC.isChecked=true;
+                        break;
+                    }
+                }
+                tagPairs.add(tempNVC);
+            }
+        }
+        if(tagType == "giftTagsForContact"){
+            allGifts = db.getAllGifts();
+            selectedGifts = db.getGiftTagsForContact(recordId);
+            //Compare against selected list
+            for (Contact contact : allContacts) {
+                NameValueCheck tempNVC = new NameValueCheck(contact.getName(), (int) contact.getId());
+                for(Contact selContact : selectedContacts) {
+                    if(contact.getId() == selContact.getId()) {
+                        tempNVC.isChecked=true;
+                        break;
+                    }
+                }
+                tagPairs.add(tempNVC);
+            }
         }
 
         //FINISH ABSTRACTING STUFF

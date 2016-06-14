@@ -8,6 +8,7 @@ import java.util.Date;
  * Created by Ryan on 5/29/2016.
  */
 public class AgendaItem {
+    private long id;
     private Contact contact;
     private String notes;
     private Date date;
@@ -23,6 +24,9 @@ public class AgendaItem {
         this.title = title;
     };
     public AgendaItem(){};
+
+    public long getId(){ return id;}
+    public void setId(long id){this.id = id;}
 
     public String getTitle(){ return title;}
     public void setTitle(String title){this.title = title;}

@@ -125,7 +125,7 @@ public class EditEventActivity extends AppCompatActivity{
     }
 
     public void showContactTags(){
-        TagDialog tagDialog = new TagDialog("contact",1);
+        TagDialog tagDialog = new TagDialog("contactTagForEvent",1);
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
     };
 

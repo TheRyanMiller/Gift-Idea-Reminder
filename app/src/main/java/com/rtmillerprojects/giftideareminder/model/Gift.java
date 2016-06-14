@@ -10,12 +10,21 @@ public class Gift {
     private String url;
     private String photoLocation;
     private String notes;
+    private long id;
 
+    public Gift(){};
     public Gift(String name, String url, String photoLocation, String notes) {
         this.name = name;
         this.url = url;
         this.photoLocation = photoLocation;
         this.notes = notes;
+    }
+
+    public long getId() {
+        return id;
+    }
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
