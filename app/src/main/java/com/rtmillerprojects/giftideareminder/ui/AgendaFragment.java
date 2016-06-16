@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
@@ -30,6 +31,7 @@ public class AgendaFragment extends BaseFragment implements FabClickListener{
     @Bind(R.id.recycler_view) RecyclerView recyclerView;
     private DatabaseHelper db;
     private LinearLayoutManager layoutManager;
+    private TextView noEventsText;
 
     public static AgendaFragment newInstance() {
         AgendaFragment fragment = new AgendaFragment();
@@ -46,6 +48,7 @@ public class AgendaFragment extends BaseFragment implements FabClickListener{
         View rootView = inflater.inflate(R.layout.agenda_fragment, container, false);
         ButterKnife.bind(this, rootView);
         //need to pull in agenda items from db
+        noEventsText = (TextView) rootView.findViewById(R.id.noEventsText);
         db = DatabaseHelper.getInstance(ACA);
         agendaItems = db.getAllAgendaItems();
 
@@ -55,16 +58,29 @@ public class AgendaFragment extends BaseFragment implements FabClickListener{
         AgendaItemAdapter agendaItemAdapter = new AgendaItemAdapter(agendaItems, ACA);
         recyclerView.setAdapter(agendaItemAdapter);
         recyclerView.setLayoutManager(layoutManager);
-
+        adjustEventVisibility(agendaItemAdapter);
         return rootView;
     }
-
 
     @Override
     public void fabClickAction() {
         Toast.makeText(ACA,"WE ARE IN AGENDA",Toast.LENGTH_SHORT).show();
         //startActivityForResult(new Intent(Intent., ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
         Intent intent = new Intent(ACA, EditEventActivity.class);
+        intent.putExtra("isNew",false);
         startActivity(intent);
+    }
+
+    private void adjustEventVisibility(AgendaItemAdapter eventAdapter){
+        int numEvents = eventAdapter.getItemCount();
+        noEventsText.setText(""+numEvents);
+        if(numEvents>0){
+            noEventsText.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+        else{
+            recyclerView.setVisibility(View.VISIBLE);
+            noEventsText.setVisibility(View.VISIBLE);
+        }
     }
 }

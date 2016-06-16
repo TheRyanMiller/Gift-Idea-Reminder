@@ -130,9 +130,6 @@ public class ContactsFragment extends BaseFragment implements FabClickListener{
             contactName = retrieveContactName(contactID);
             contactNumber = retrieveContactNumber(contactID);
             contactPhoto = retrieveContactPhoto(contactID);
-            Log.d(TAG, "Contact ID: " + contactID);
-            Log.d(TAG, "SRSLY CONTACT NAME IS: " + contactName);
-            Log.d(TAG, "SRSLY CONTACT NUMBER IS: " + contactNumber);
             Contact newContact = new Contact(contactName,"Brother", contactPhoto);
             db.insertContact(newContact);
             contacts.clear();

@@ -37,7 +37,7 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Ag
 
     public AgendaItemAdapter(ArrayList<AgendaItem> agendaItems, Context context) {
         this.agendaItems = agendaItems;
-        this.agendaItems = agendaItems;
+        this.context = context;
     }
 
     @Override

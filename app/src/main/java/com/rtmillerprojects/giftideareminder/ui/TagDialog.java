@@ -44,7 +44,9 @@ public class TagDialog extends DialogFragment{
     private long recordId;
     private String tagType;
     private ArrayList<Integer> selectedTagIds;
+
     public TagDialog(){/*required public constructor*/}
+
     @SuppressLint("ValidFragment")
     public TagDialog(String tagType, long recordId){
         this.tagType = tagType;
@@ -64,6 +66,7 @@ public class TagDialog extends DialogFragment{
         //ABSTRACT THIS STUFF
         db = DatabaseHelper.getInstance(getActivity());
         tagPairs = new ArrayList<>();
+
         if(tagType == "contactTagsForEvent"){
             allContacts = db.getAllContacts();
             selectedContacts = db.getContactTagsForEvent(recordId);
@@ -98,10 +101,55 @@ public class TagDialog extends DialogFragment{
             allGifts = db.getAllGifts();
             selectedGifts = db.getGiftTagsForContact(recordId);
             //Compare against selected list
-            for (Contact contact : allContacts) {
-                NameValueCheck tempNVC = new NameValueCheck(contact.getName(), (int) contact.getId());
-                for(Contact selContact : selectedContacts) {
-                    if(contact.getId() == selContact.getId()) {
+            for (Gift gift : allGifts) {
+                NameValueCheck tempNVC = new NameValueCheck(gift.getName(), (int) gift.getId());
+                for(Gift selGift : selectedGifts) {
+                    if(gift.getId() == selGift.getId()) {
+                        tempNVC.isChecked=true;
+                        break;
+                    }
+                }
+                tagPairs.add(tempNVC);
+            }
+        }
+        if(tagType == "giftTagsForEvent"){
+            allGifts = db.getAllGifts();
+            selectedGifts = db.getGiftTagsForContact(recordId);
+            //Compare against selected list
+            for (Gift gift : allGifts) {
+                NameValueCheck tempNVC = new NameValueCheck(gift.getName(), (int) gift.getId());
+                for(Gift selGift : selectedGifts) {
+                    if(gift.getId() == selGift.getId()) {
+                        tempNVC.isChecked=true;
+                        break;
+                    }
+                }
+                tagPairs.add(tempNVC);
+            }
+        }
+        if(tagType == "eventTagsForGift"){
+            allEvents = db.getAllAgendaItems();
+            selectedEvents = db.getEventTagsForGift(recordId);
+            //Compare against selected list
+            for (AgendaItem event : allEvents) {
+                NameValueCheck tempNVC = new NameValueCheck(event.getTitle(), (int) event.getId());
+                for(AgendaItem selEvent : selectedEvents) {
+                    if(event.getId() == selEvent.getId()) {
+                        tempNVC.isChecked=true;
+                        break;
+                    }
+                }
+                tagPairs.add(tempNVC);
+            }
+        }
+        if(tagType == "eventTagsForContact"){
+            allEvents = db.getAllAgendaItems();
+            selectedEvents = db.getEventTagsForContact(recordId);
+            //Compare against selected list
+            for (AgendaItem event : allEvents) {
+                NameValueCheck tempNVC = new NameValueCheck(event.getTitle(), (int) event.getId());
+                for(AgendaItem selEvent : selectedEvents) {
+                    if(event.getId() == selEvent.getId()) {
                         tempNVC.isChecked=true;
                         break;
                     }
@@ -135,28 +183,28 @@ public class TagDialog extends DialogFragment{
                             }
                         }
                         str=str.substring(0,str.length()-2);
-                        Toast.makeText(getActivity(),str,Toast.LENGTH_SHORT).show();
-                        if(tagType=="contactTagForEvent"){
+                        //Toast.makeText(getActivity(),str,Toast.LENGTH_SHORT).show();
+                        if(tagType=="contactTagsForEvent"){
                             db.deleteContactTagsForEvent(recordId);
                             db.insertContactTagsForEvent(recordId, selectedTagIds);
                         }
-                        if(tagType=="contactTagForGift"){
+                        if(tagType=="contactTagsForGift"){
                             db.deleteContactTagsForGift(recordId);
                             db.insertContactTagsForGift(recordId, selectedTagIds);
                         }
-                        if(tagType=="eventTagForContact"){
+                        if(tagType=="eventTagsForContact"){
                             db.deleteEventTagsForContact(recordId);
                             db.insertEventTagsForContact(recordId, selectedTagIds);
                         }
-                        if(tagType=="eventTagForGift"){
+                        if(tagType=="eventTagsForGift"){
                             db.deleteEventTagsForGift(recordId);
                             db.insertEventTagsForGift(recordId, selectedTagIds);
                         }
-                        if(tagType=="giftTagForContact"){
+                        if(tagType=="giftTagsForContact"){
                             db.deleteGiftTagsForContact(recordId);
                             db.insertGiftTagsForContact(recordId, selectedTagIds);
                         }
-                        if(tagType=="giftTagForEvent"){
+                        if(tagType=="giftTagsForEvent"){
                             db.deleteGiftTagsForEvent(recordId);
                             db.insertGiftTagsForEvent(recordId, selectedTagIds);
                         }

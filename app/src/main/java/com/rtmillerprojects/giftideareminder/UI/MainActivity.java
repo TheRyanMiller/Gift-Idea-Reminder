@@ -31,8 +31,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         db = DatabaseHelper.getInstance(this);
         //db.onCreate(db);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(MainFragment.class.getName()) == null) {
-
+        if (savedInstanceState == null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, MainFragment.newInstance(), MainFragment.class.getName())
                     .commit();

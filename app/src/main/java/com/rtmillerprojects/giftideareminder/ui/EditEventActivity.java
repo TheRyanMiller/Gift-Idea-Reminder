@@ -3,6 +3,7 @@ package com.rtmillerprojects.giftideareminder.ui;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rtmillerprojects.giftideareminder.R;
+import com.rtmillerprojects.giftideareminder.adapter.AgendaItemAdapter;
 import com.rtmillerprojects.giftideareminder.model.AgendaItem;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
@@ -42,6 +44,8 @@ public class EditEventActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_event);
+        Intent intent = getIntent();
+        boolean isNew = intent.getBooleanExtra("isNew",true);
         spinner = (Spinner) findViewById(R.id.recurrence_spinner);
         toolbar = (Toolbar) findViewById(R.id.editEventToolbar);
         btnSave = (Button) findViewById(R.id.btn_save_event);
@@ -125,8 +129,10 @@ public class EditEventActivity extends AppCompatActivity{
     }
 
     public void showContactTags(){
-        TagDialog tagDialog = new TagDialog("contactTagForEvent",1);
+
+        //Now need to create a dummy record for new eventgs
+        TagDialog tagDialog = new TagDialog("contactTagsForEvent",1);
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
-    };
+    }
 
 }
