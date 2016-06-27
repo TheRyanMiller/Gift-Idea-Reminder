@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +67,13 @@ public class AgendaFragment extends BaseFragment implements FabClickListener{
     public void fabClickAction() {
         Toast.makeText(ACA,"WE ARE IN AGENDA",Toast.LENGTH_SHORT).show();
         //startActivityForResult(new Intent(Intent., ContactsContract.Contacts.CONTENT_URI), RESULT_PICK_CONTACT);
+        int recordId;
+        DatabaseHelper db = DatabaseHelper.getInstance(getContext());
+        AgendaItem newEvent = new AgendaItem(null,null,null);
+        recordId = (int) db.insertAgendaItem(newEvent);
         Intent intent = new Intent(ACA, EditEventActivity.class);
-        intent.putExtra("isNew",false);
+        intent.putExtra("recordId",recordId);
+        intent.putExtra("isNew",true);
         startActivity(intent);
     }
 

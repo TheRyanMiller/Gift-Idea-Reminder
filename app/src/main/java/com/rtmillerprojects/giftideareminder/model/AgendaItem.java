@@ -9,7 +9,6 @@ import java.util.Date;
  */
 public class AgendaItem {
     private long id;
-    private Contact contact;
     private String notes;
     private Date date;
     private String title;
@@ -17,9 +16,8 @@ public class AgendaItem {
     private String recurrate;
     private Bitmap eventImage;
 
-    public AgendaItem(Contact contact, String title, String notes, Date date){
+    public AgendaItem(String title, String notes, Date date){
         this.date = date;
-        this.contact = contact;
         this.notes = notes;
         this.title = title;
     };

@@ -1,4 +1,4 @@
-package com.rtmillerprojects.giftideareminder.ui;
+package com.rtmillerprojects.giftideareminder.model;
 
 /**
  * Created by Ryan on 6/12/2016.

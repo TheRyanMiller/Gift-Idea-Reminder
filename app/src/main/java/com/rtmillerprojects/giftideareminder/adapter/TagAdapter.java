@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.rtmillerprojects.giftideareminder.R;
-import com.rtmillerprojects.giftideareminder.ui.NameValueCheck;
+import com.rtmillerprojects.giftideareminder.model.NameValueCheck;
 
 import java.util.ArrayList;
 

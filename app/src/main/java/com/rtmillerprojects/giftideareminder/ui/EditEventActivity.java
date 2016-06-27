@@ -39,13 +39,20 @@ public class EditEventActivity extends AppCompatActivity{
     Switch recurringSwitch;
     LinearLayout editContactTag;
     LinearLayout editGiftTag;
+    boolean isNew;
+    int recordId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_event);
         Intent intent = getIntent();
-        boolean isNew = intent.getBooleanExtra("isNew",true);
+        recordId = intent.getIntExtra("recordId",0);
+        isNew = intent.getBooleanExtra("isNew",true);
+        if(recordId==0){
+            isNew=true;
+        }
+
         spinner = (Spinner) findViewById(R.id.recurrence_spinner);
         toolbar = (Toolbar) findViewById(R.id.editEventToolbar);
         btnSave = (Button) findViewById(R.id.btn_save_event);
@@ -69,7 +76,12 @@ public class EditEventActivity extends AppCompatActivity{
             setSupportActionBar(toolbar);
             assert getSupportActionBar() != null;
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Add an event");
+            if(isNew){
+                getSupportActionBar().setTitle("Add an event");
+            }
+            else{
+                getSupportActionBar().setTitle("Edit event");
+            }
         }
         ArrayAdapter<CharSequence> recurrenceOptionAdapter = ArrayAdapter.createFromResource(this,
                 R.array.recurrence_options, android.R.layout.simple_spinner_item);
@@ -130,8 +142,11 @@ public class EditEventActivity extends AppCompatActivity{
 
     public void showContactTags(){
 
-        //Now need to create a dummy record for new eventgs
-        TagDialog tagDialog = new TagDialog("contactTagsForEvent",1);
+        //Now need to create a dummy record for new events
+        if(isNew){
+
+        }
+        TagDialog tagDialog = new TagDialog("Contact","Event",recordId);
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
     }
 
