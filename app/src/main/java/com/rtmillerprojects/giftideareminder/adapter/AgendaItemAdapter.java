@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,8 +24,9 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Ag
 
     private ArrayList<AgendaItem> agendaItems;
     private Context context;
+    private AdapterView.OnItemClickListener listener;
 
-    public static class AgendaItemViewHolder extends RecyclerView.ViewHolder {
+    public static class AgendaItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.agenda_item_title) TextView agendaItemTitle;
         @Bind(R.id.agenda_item_subheader) TextView subHeader;
         @Bind(R.id.agenda_row_photo) ImageView agendaPhoto;
@@ -33,11 +35,20 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Ag
             super(v);
             ButterKnife.bind(this, v);
         }
+
+        public void bind(final AgendaItem item, final AdapterView.OnItemClickListener listener) {
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
+        }
     }
 
-    public AgendaItemAdapter(ArrayList<AgendaItem> agendaItems, Context context) {
+    public AgendaItemAdapter(ArrayList<AgendaItem> agendaItems, Context context, AdapterView.OnItemClickListener listener) {
         this.agendaItems = agendaItems;
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -52,10 +63,13 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Ag
     public void onBindViewHolder(AgendaItemViewHolder holder, int position) {
         AgendaItem agendaItem = agendaItems.get(position);
         holder.agendaItemTitle.setText(agendaItem.getTitle());
+        holder.bind(agendaItems.get(position), listener);
     }
 
     @Override
     public int getItemCount() {
         return agendaItems.size();
     }
+
+
 }
