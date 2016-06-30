@@ -39,6 +39,7 @@ public class EditEventActivity extends AppCompatActivity{
     Switch recurringSwitch;
     LinearLayout editContactTag;
     LinearLayout editGiftTag;
+    AgendaItem event;
     boolean isNew;
     int recordId;
 
@@ -70,6 +71,7 @@ public class EditEventActivity extends AppCompatActivity{
                 showContactTags();
             }
         });
+        DatabaseHelper db = DatabaseHelper.getInstance(this);
 
         Bundle extras = getIntent().getExtras();
         if (toolbar != null) {
@@ -89,13 +91,15 @@ public class EditEventActivity extends AppCompatActivity{
         recurrenceOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(recurrenceOptionAdapter);
-
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 saveEvent();
             }
         });
+
+        event = db.getEventById(recordId);
+
 
     }
     public void onStart(){
@@ -118,7 +122,7 @@ public class EditEventActivity extends AppCompatActivity{
         }
     }
     public void saveEvent(){
-        Toast.makeText(this, "This is not quite saved yet.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "isNew: "+isNew, Toast.LENGTH_SHORT).show();
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         AgendaItem ai = new AgendaItem();
         ai.setTitle(eventTitle.getText().toString());

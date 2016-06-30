@@ -320,6 +320,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return agendaItems;
     }
 
+    public AgendaItem getEventById(long recordId) {
+        AgendaItem dbAgendaItem = new AgendaItem();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_AGENDA_ITEMS +" WHERE "+ KEY_ID +" = "+ recordId;
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()) {
+            dbAgendaItem.setTitle(c.getString(c.getColumnIndex(EVENT_TITLE)));
+            try{
+                Date dbDate = new Date(c.getLong(c.getColumnIndex(EVENT_DATE))*1000);
+                dbAgendaItem.setDate(dbDate);
+            } catch(ParseException e) {
+                e.printStackTrace();
+            }
+            int isRecurring = c.getInt(c.getColumnIndex(EVENT_RECURRING));
+            dbAgendaItem.setRecurRate(c.getString(c.getColumnIndex(EVENT_RECURRATE)));
+            //Handle date type incompatibilities
+            if(isRecurring==1){dbAgendaItem.setRecurring(true);}
+            else{dbAgendaItem.setRecurring(false);}
+
+            if(c.getBlob(c.getColumnIndex(EVENT_IMAGE))==null) {}
+            else{
+                dbAgendaItem.setEventImage(DbBitmapUtility.getImage(c.getBlob(c.getColumnIndex(EVENT_IMAGE))));
+            }
+        }
+        return dbAgendaItem;
+    }
+
     public ArrayList<Contact> getContactTagsForEvent(long eventId){
         ArrayList<Contact> contacts = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
