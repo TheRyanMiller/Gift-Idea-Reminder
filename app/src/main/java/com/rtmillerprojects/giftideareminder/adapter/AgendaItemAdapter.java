@@ -58,6 +58,7 @@ public class AgendaItemAdapter extends RecyclerView.Adapter<AgendaItemAdapter.Ag
             Intent intent = new Intent(context, EditEventActivity.class);
             intent.putExtra("recordId",recordId);
             intent.putExtra("isNew",false);
+            intent.putExtra("data",event);
             context.startActivity(intent);
         }
     }

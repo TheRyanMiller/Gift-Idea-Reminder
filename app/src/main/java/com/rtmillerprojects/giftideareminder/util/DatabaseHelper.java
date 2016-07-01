@@ -288,14 +288,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<AgendaItem> agendaItems = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT  * FROM " + TABLE_AGENDA_ITEMS;
-        /* Specified record
-        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS + " WHERE "
-                + KEY_ID + " = " + todo_id;
-        */
         Cursor c = db.rawQuery(selectQuery, null);
         if (c.moveToFirst()) {
             do {
                 AgendaItem dbAgendaItem = new AgendaItem();
+                dbAgendaItem.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 dbAgendaItem.setTitle(c.getString(c.getColumnIndex(EVENT_TITLE)));
                 try{
                     Date dbDate = new Date(c.getLong(c.getColumnIndex(EVENT_DATE))*1000);

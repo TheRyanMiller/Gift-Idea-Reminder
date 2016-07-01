@@ -50,8 +50,12 @@ public class EditEventActivity extends AppCompatActivity{
         Intent intent = getIntent();
         recordId = intent.getIntExtra("recordId",0);
         isNew = intent.getBooleanExtra("isNew",true);
+
         if(recordId==0){
             isNew=true;
+        }
+        else{
+            event = intent.getParcelableExtra("data");
         }
 
         spinner = (Spinner) findViewById(R.id.recurrence_spinner);
@@ -83,6 +87,8 @@ public class EditEventActivity extends AppCompatActivity{
             }
             else{
                 getSupportActionBar().setTitle("Edit event");
+                //event = db.getEventById(recordId);
+                eventTitle.setText(event.getTitle());
             }
         }
         ArrayAdapter<CharSequence> recurrenceOptionAdapter = ArrayAdapter.createFromResource(this,
@@ -97,8 +103,6 @@ public class EditEventActivity extends AppCompatActivity{
                 saveEvent();
             }
         });
-
-        event = db.getEventById(recordId);
 
 
     }
