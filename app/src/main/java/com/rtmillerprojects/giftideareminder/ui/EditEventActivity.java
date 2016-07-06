@@ -27,6 +27,8 @@ import com.rtmillerprojects.giftideareminder.adapter.AgendaItemAdapter;
 import com.rtmillerprojects.giftideareminder.model.AgendaItem;
 import com.rtmillerprojects.giftideareminder.util.DatabaseHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by Ryan on 6/5/2016.
  */
@@ -163,8 +165,12 @@ public class EditEventActivity extends AppCompatActivity{
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
         tagDialog.setDialogResult(new TagDialog.OnMyDialogResult(){
             @Override
-            public void dialogFinish(String result) {
-                Toast.makeText(EditEventActivity.this, result, Toast.LENGTH_SHORT).show();
+            public void dialogFinish(ArrayList<Integer> selectedTagIds) {
+                String str = "";
+                for(int ints : selectedTagIds){
+                    str+=" "+ints;
+                }
+                Toast.makeText(EditEventActivity.this, str, Toast.LENGTH_SHORT).show();
             }
 
         });

@@ -205,7 +205,7 @@ public class TagDialog extends DialogFragment{
                         str = str + tagAdapter.getTagPair(i).value+ ", ";
                     }
                 }
-                mDialogResult.dialogFinish(str);
+                mDialogResult.dialogFinish(selectedTagIds);
             }
             TagDialog.this.dismiss();
         }
@@ -215,7 +215,7 @@ public class TagDialog extends DialogFragment{
         mDialogResult = dialogResult;
     }
     public interface OnMyDialogResult{
-        void dialogFinish(String result);
+        void dialogFinish(ArrayList<Integer> result);
     }
 }
 /*
