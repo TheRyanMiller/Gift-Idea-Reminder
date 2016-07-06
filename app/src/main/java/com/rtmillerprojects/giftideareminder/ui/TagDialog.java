@@ -44,6 +44,8 @@ public class TagDialog extends DialogFragment{
     private long recordId;
     private String tagType;
     private ArrayList<Integer> selectedTagIds;
+    private TagAdapter tagAdapter;
+    OnMyDialogResult mDialogResult;
 
     public TagDialog(){/*required public constructor*/}
 
@@ -169,7 +171,7 @@ public class TagDialog extends DialogFragment{
         }
 
         //FINISH ABSTRACTING STUFF
-        final TagAdapter tagAdapter = new TagAdapter(tagPairs, getActivity()); //Maybe need to pass in a bunch of contact names here?
+        tagAdapter = new TagAdapter(tagPairs, getActivity()); //Maybe need to pass in a bunch of contact names here?
         recyclerView.setAdapter(tagAdapter);
         recyclerView.setLayoutManager(layoutManager);
         str = "";
@@ -177,11 +179,49 @@ public class TagDialog extends DialogFragment{
 
         builder .setView(dialogLayout)
                 //.setMessage("This is my dialog")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("OK", new OKListener())
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        View view = getView();
-                        //RecyclerView recyclerView = (RecyclerView) (view != null ? view.findViewById(R.id.recycler_view_tags) : null);
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+
+        return dialog;
+    }
+
+    private class OKListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if( mDialogResult != null ){
+                int count = recyclerView.getAdapter().getItemCount();
+                CheckBox chkbox;
+                selectedTagIds = new ArrayList<>();
+                for(int i=0;i<count;i++){
+                    chkbox = (CheckBox) recyclerView.findViewHolderForAdapterPosition(i).itemView.findViewById(R.id.tagCheckBox);
+                    if(chkbox.isChecked()) {
+                        selectedTagIds.add(tagAdapter.getTagPair(i).value);
+                        str = str + tagAdapter.getTagPair(i).value+ ", ";
+                    }
+                }
+                mDialogResult.dialogFinish(str);
+            }
+            TagDialog.this.dismiss();
+        }
+    }
+
+    public void setDialogResult(OnMyDialogResult dialogResult){
+        mDialogResult = dialogResult;
+    }
+    public interface OnMyDialogResult{
+        void dialogFinish(String result);
+    }
+}
+/*
+* new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
                         int count = recyclerView.getAdapter().getItemCount();
                         CheckBox chkbox;
                         selectedTagIds = new ArrayList<>();
@@ -226,14 +266,5 @@ public class TagDialog extends DialogFragment{
                         }
                     }
                 })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        AlertDialog dialog = builder.create();
-
-        return dialog;
-    }
-}
+*
+* */

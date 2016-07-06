@@ -27,6 +27,7 @@
             android:parentActivityName=".ui.MainActivity">
             <intent-filter>
                 <action android:name=".ui.EditEventActivity" />
+                <action android:name=".ui.MainActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

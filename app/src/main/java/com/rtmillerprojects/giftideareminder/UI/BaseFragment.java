@@ -1,5 +1,6 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ public class BaseFragment extends Fragment {
     @Override public void onAttach(Context context) {
         super.onAttach(context);
         ACA = (AppCompatActivity) context;
+
     }
 
     @Override public void onDetach() {

@@ -1,5 +1,7 @@
 package com.rtmillerprojects.giftideareminder.ui;
 
+import android.app.Activity;
+import android.app.Application;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -42,6 +44,9 @@ public class EditEventActivity extends AppCompatActivity{
     AgendaItem event;
     boolean isNew;
     int recordId;
+    Context mContext;
+    Activity mActivity;
+    TagDialog tagDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +55,6 @@ public class EditEventActivity extends AppCompatActivity{
         Intent intent = getIntent();
         recordId = intent.getIntExtra("recordId",0);
         isNew = intent.getBooleanExtra("isNew",true);
-
         if(recordId==0){
             isNew=true;
         }
@@ -87,8 +91,8 @@ public class EditEventActivity extends AppCompatActivity{
             }
             else{
                 getSupportActionBar().setTitle("Edit event");
-                //event = db.getEventById(recordId);
                 eventTitle.setText(event.getTitle());
+
             }
         }
         ArrayAdapter<CharSequence> recurrenceOptionAdapter = ArrayAdapter.createFromResource(this,
@@ -135,7 +139,8 @@ public class EditEventActivity extends AppCompatActivity{
         ai.setRecurRate(spinner.getSelectedItem().toString());
         //ai.setEventImage();
         db.insertAgendaItem(ai);
-        NavUtils.navigateUpFromSameTask(this);
+        this.finish();
+        //NavUtils.navigateUpFromSameTask(this);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -156,6 +161,14 @@ public class EditEventActivity extends AppCompatActivity{
         }
         TagDialog tagDialog = new TagDialog("Contact","Event",recordId);
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
+        tagDialog.setDialogResult(new TagDialog.OnMyDialogResult(){
+            @Override
+            public void dialogFinish(String result) {
+                Toast.makeText(EditEventActivity.this, result, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        //
     }
 
 }

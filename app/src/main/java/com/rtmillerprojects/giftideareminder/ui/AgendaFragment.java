@@ -56,7 +56,7 @@ public class AgendaFragment extends BaseFragment implements FabClickListener{
         layoutManager = new LinearLayoutManager(ACA);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        AgendaItemAdapter agendaItemAdapter = new AgendaItemAdapter(agendaItems, ACA);
+        AgendaItemAdapter agendaItemAdapter = new AgendaItemAdapter(agendaItems,ACA);
         recyclerView.setAdapter(agendaItemAdapter);
         recyclerView.setLayoutManager(layoutManager);
         adjustEventVisibility(agendaItemAdapter);
