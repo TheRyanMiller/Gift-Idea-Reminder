@@ -49,15 +49,12 @@ public class TagDialog extends DialogFragment{
 
     public TagDialog(){/*required public constructor*/}
 
-    @SuppressLint("ValidFragment")
-    public TagDialog(String tagType, String recordType, long recordId){
-        this.tagType = tagType;
-        this.recordType = recordType;
-    }
 
     @Override
     @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState){
+        tagType = getArguments().getString("tagType");
+        recordType = getArguments().getString("recordType");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogLayout = inflater.inflate(R.layout.edit_tag_list, null);

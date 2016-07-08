@@ -46,6 +46,8 @@ public class EditEventActivity extends AppCompatActivity{
     AgendaItem event;
     boolean isNew;
     int recordId;
+    ArrayList<Integer> contactTagIds;
+    ArrayList<Integer> giftTagIds;
     Context mContext;
     Activity mActivity;
     TagDialog tagDialog;
@@ -136,13 +138,30 @@ public class EditEventActivity extends AppCompatActivity{
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         AgendaItem ai = new AgendaItem();
         ai.setTitle(eventTitle.getText().toString());
-        //ai.setDate(eventTitle.getText().toString());
+        ai.setId(recordId);
         ai.setRecurring(recurringSwitch.isActivated());
         ai.setRecurRate(spinner.getSelectedItem().toString());
-        //ai.setEventImage();
-        db.insertAgendaItem(ai);
+        if(isNew) {
+            db.insertAgendaItem(ai);
+        }
+        else{
+            db.updateEvents(recordId,ai);
+        }
+        //Tags
+        if(contactTagIds != null && contactTagIds.size()>0){
+            String str = "";
+            for(int ints : contactTagIds){
+                str+=" "+ints;
+            }
+            Toast.makeText(EditEventActivity.this, str, Toast.LENGTH_SHORT).show();
+            db.deleteContactTagsForEvent(recordId);
+            db.insertContactTagsForEvent(recordId, contactTagIds);
+        }
+        if(giftTagIds != null && giftTagIds.size()>0){
+            db.deleteContactTagsForEvent(recordId);
+            db.insertContactTagsForEvent(recordId, giftTagIds);
+        }
         this.finish();
-        //NavUtils.navigateUpFromSameTask(this);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -161,16 +180,19 @@ public class EditEventActivity extends AppCompatActivity{
         if(isNew){
 
         }
-        TagDialog tagDialog = new TagDialog("Contact","Event",recordId);
+        TagDialog tagDialog = new TagDialog();
+        Bundle bundle = new Bundle();
+        bundle.putInt("recordId", recordId);
+        bundle.putString("tagType", "Contact");
+        bundle.putString("recordType", "Event");
+        tagDialog.setArguments(bundle);
+                //"Contact","Event",recordId);
         tagDialog.show(this.getFragmentManager(),"my_dialog_tag");
         tagDialog.setDialogResult(new TagDialog.OnMyDialogResult(){
             @Override
             public void dialogFinish(ArrayList<Integer> selectedTagIds) {
-                String str = "";
-                for(int ints : selectedTagIds){
-                    str+=" "+ints;
-                }
-                Toast.makeText(EditEventActivity.this, str, Toast.LENGTH_SHORT).show();
+                contactTagIds = selectedTagIds;
+
             }
 
         });

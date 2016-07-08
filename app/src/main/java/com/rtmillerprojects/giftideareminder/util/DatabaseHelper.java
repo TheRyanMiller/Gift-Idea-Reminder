@@ -25,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static DatabaseHelper sInstance;
     private static final String TAG = "DatabaseHelper";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     //Table Defs
     public static final String DATABASE_NAME = "giftymcgiftface.db";
@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     private static final String CREATE_TABLE_AGENDA_ITEMS = "CREATE TABLE " +
-            TABLE_AGENDA_ITEMS + "(" + KEY_ID + " INTEGER PRIMARY KEY," +
+            TABLE_AGENDA_ITEMS + "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             EVENT_TITLE + " TEXT," +
             EVENT_DATE + " DATE," +
             EVENT_RECURRING + " BOOLEAN," +
@@ -71,14 +71,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             KEY_CREATED_AT + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_CONTACTS = "CREATE TABLE " + TABLE_CONTACTS + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY," +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             CONTACT_NAME + " TEXT," +
             CONTACT_RELATIONSHIP + " TEXT," +
             CONTACT_IMAGE + " BLOB," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_GIFTS = "CREATE TABLE " + TABLE_GIFTS + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY," +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             GIFT_NAME + " TEXT," +
             GIFT_URL + " TEXT," +
             GIFT_PHOTO_LOCATION + " TEXT," +
@@ -86,19 +86,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //Create Associative tables
     private static final String CREATE_TABLE_CONTACTS_GIFTS = "CREATE TABLE " + TABLE_CONTACTS_GIFTS + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY," +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             CONTACTS_ID + " INTEGER," +
             GIFTS_ID + " INTEGER," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_CONTACTS_EVENTS = "CREATE TABLE " + TABLE_CONTACTS_EVENTS + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY," +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             CONTACTS_ID + " INTEGER," +
             EVENTS_ID + " INTEGER," +
             KEY_CREATED_AT + " DATETIME" + ")";
 
     private static final String CREATE_TABLE_EVENTS_GIFTS = "CREATE TABLE " + TABLE_EVENTS_GIFTS + "(" +
-            KEY_ID + " INTEGER PRIMARY KEY," +
+            KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             EVENTS_ID + " INTEGER," +
             GIFTS_ID + " INTEGER," +
             KEY_CREATED_AT + " DATETIME" + ")";
@@ -594,10 +594,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_EVENTS_GIFTS,GIFTS_ID+"="+giftId,null);
     }
 
+    public void updateEvents(long eventId, AgendaItem ai){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues newValues = new ContentValues();
+        newValues.put(EVENT_RECURRATE, ai.getRecurRate());
+        if(ai.getDate() != null) {
+            newValues.put(EVENT_DATE, ai.getDate().toString());
+        }
+        newValues.put(EVENT_TITLE, ai.getTitle());
+        newValues.put(EVENT_RECURRING, ai.getRecurring());
+        db.update(TABLE_AGENDA_ITEMS, newValues, KEY_ID+"="+eventId, null);
+    }
+
     private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
     }
+
 }
